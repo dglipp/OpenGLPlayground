@@ -1,0 +1,5 @@
+.vscode
+deps
+build/**
+!build/placeholder.txt
+.DS_Store
