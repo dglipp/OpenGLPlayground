@@ -21,10 +21,8 @@ bool GLLogCall(const char *function, const char *file, int line)
 
 void Renderer::Draw(const VertexArray &va, const ElementBuffer &eb, const Shader &shader) const
 {
-    Clear();
     shader.Bind();
     va.Bind();
-    eb.Bind();
     GLCall(glDrawElements(GL_TRIANGLES, eb.GetCount(), GL_UNSIGNED_INT, nullptr));
 }
 

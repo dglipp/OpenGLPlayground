@@ -21,11 +21,6 @@ file(GLOB TESTS "src/tests/*.cpp")
 file(GLOB IMGUI_SRC "include/VENDOR/IMGUI/*.cpp")
 
 add_executable(testOGL ${SOURCES} ${IMGUI_SRC} ${TESTS})
-if (APPLE)
-    find_library(COCOA_LIBRARY Cocoa)
-    find_library(IOKIT_LIBRARY IOKit)
-    SET(EXTRA_LIBS ${COCOA_LIBRARY} ${IOKIT_LIBRARY})
-    target_link_libraries(testOGL OpenGL::GL glfw3 GLEW ${EXTRA_LIBS})
-else()
-    target_link_libraries(testOGL OpenGL::GL glfw GLEW)
-endif()
+
+target_link_libraries(testOGL OpenGL::GL glfw GLEW)
+

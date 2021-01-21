@@ -26,11 +26,11 @@ void VertexArray::Unbind() const
 
 void VertexArray::AddBuffer(const VertexBuffer &vb, const VertexBufferLayout &layout)
 {
-
+    Bind();
     for (const auto & [ key, value ] : layout)
     {
         GLCall(glVertexAttribPointer(value.index, value.count, value.type, value.normalized, layout.getStride(), (const void *) (long int) value.position));
         GLCall(glEnableVertexAttribArray(value.index));
     }
-    Unbind();
+
 }

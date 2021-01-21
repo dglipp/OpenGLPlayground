@@ -13,7 +13,7 @@ namespace test
     TestTriangle::TestTriangle()
         : m_VertexArray(), m_VertexBuffer(), m_ElementBuffer()
     {
-        m_Shader = Shader("../res/shaders/triangle.glsl");
+        m_Shader = Shader("res/shaders/triangle.glsl");
 
         float vertices[] = {
             -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,

@@ -62,7 +62,8 @@ inline bool VertexBufferLayout::Push<float>(unsigned int count, const std::strin
 {
     if (m_Attribs.find(name) == m_Attribs.end())
     {
-        m_Attribs[name] = {(unsigned short) m_Attribs.size(), GL_FLOAT, count, GL_FALSE, (int) m_Stride};
+        unsigned short index = m_Attribs.size();
+        m_Attribs[name] = {index, GL_FLOAT, count, GL_FALSE, (int) m_Stride};
         m_Stride += VertexBufferElement::GetSizeOfType(GL_FLOAT) * count;
         return false;
     }

@@ -41,7 +41,7 @@ int main(void)
     glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #endif
 
-    window = glfwCreateWindow(600, 600, "OpenGL Test Window", NULL, NULL);
+    window = glfwCreateWindow(1200, 1200, "OpenGL Test Window", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
