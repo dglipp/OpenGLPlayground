@@ -50,6 +50,6 @@ namespace test
 
     void TestTriangle::onImGuiRender()
     {
-        // ImGui::Text("Clear Color");
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0/(ImGui::GetIO().Framerate), (ImGui::GetIO().Framerate));
     }
 }

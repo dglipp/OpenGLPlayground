@@ -25,6 +25,13 @@
 #include <iostream>
 #include <math.h>
 
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
+
 int main(void)
 {
     GLFWwindow *window;
@@ -49,6 +56,7 @@ int main(void)
     }
 
     glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSwapInterval(1);
 
     if (glewInit() != GLEW_OK)
@@ -139,3 +147,4 @@ int main(void)
     glfwTerminate();
     return 0;
 }
+
