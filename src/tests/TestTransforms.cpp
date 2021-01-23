@@ -83,7 +83,7 @@ namespace test
         renderer.Draw(m_VertexArray, m_ElementBuffer, m_Shader);
     }
 
-    void TestTransforms::onImGuiRender()
+    void TestTransforms::onImGuiRender(GLFWwindow *window)
     {
         ImGui::SliderFloat("Omega", &m_Omega, -50.0f, 50.0f);
         ImGui::SliderFloat("Speed", &m_Speed, 0.0f, 10.0f);

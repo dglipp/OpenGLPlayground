@@ -48,7 +48,7 @@ namespace test
         renderer.Draw(m_VertexArray, m_ElementBuffer, m_Shader);
     }
 
-    void TestTriangle::onImGuiRender()
+    void TestTriangle::onImGuiRender(GLFWwindow *window)
     {
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0/(ImGui::GetIO().Framerate), (ImGui::GetIO().Framerate));
     }

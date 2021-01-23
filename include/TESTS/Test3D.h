@@ -17,7 +17,7 @@ namespace test
 
             void onUpdate(float deltaTime) override;
             void onRender(const Renderer &renderer) override;
-            void onImGuiRender() override;
+            void onImGuiRender(GLFWwindow *window) override;
         private:
             Shader m_Shader;
             VertexArray m_VertexArray;

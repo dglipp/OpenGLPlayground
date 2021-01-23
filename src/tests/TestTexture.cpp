@@ -62,7 +62,7 @@ namespace test
         renderer.Draw(m_VertexArray, m_ElementBuffer, m_Shader);
     }
 
-    void TestTexture::onImGuiRender()
+    void TestTexture::onImGuiRender(GLFWwindow *window)
     {
         if(ImGui::Button("Change Texture"))
         {

@@ -20,6 +20,7 @@
 #include <TESTS/TestTexture.h>
 #include <TESTS/TestTransforms.h>
 #include <TESTS/Test3D.h>
+#include <TESTS/TestCamera.h>
 
 #include <random>
 #include <iostream>
@@ -88,6 +89,7 @@ int main(void)
     testMenu->RegisterTest<test::TestTexture>("Render textures");
     testMenu->RegisterTest<test::TestTransforms>("Transformations");
     testMenu->RegisterTest<test::Test3D>("Simple 3D rendering");
+    testMenu->RegisterTest<test::TestCamera>("Camera");
 
     while (!glfwWindowShouldClose(window))
     {
@@ -111,7 +113,7 @@ int main(void)
             currentTest->onRender(renderer);
         }
 
-        currentTest->onImGuiRender();
+        currentTest->onImGuiRender(window);
 
         ImGui::End();
 
@@ -122,22 +124,30 @@ int main(void)
 
         glfwPollEvents();
 
+        if(glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS)
+        {
+            currentTest = testMenu;
+        }
+
         if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, true);
+        {
+            glfwSetWindowShouldClose(window, GL_TRUE);
+        }
 
-        if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-            currentTest->SetInput(GLFW_KEY_UP);
+        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            currentTest->SetInput(GLFW_KEY_W);
 
-        if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-            currentTest->SetInput(GLFW_KEY_DOWN);
+        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            currentTest->SetInput(GLFW_KEY_S);
 
-        if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-            currentTest->SetInput(GLFW_KEY_LEFT);
-
-        if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-            currentTest->SetInput(GLFW_KEY_RIGHT);
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
             currentTest->SetInput(GLFW_KEY_A);
+
+        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            currentTest->SetInput(GLFW_KEY_D);
+        
+        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            currentTest->SetInput(GLFW_KEY_D);
     }
 
     delete currentTest;

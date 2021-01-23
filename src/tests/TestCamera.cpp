@@ -6,7 +6,7 @@
 #include <INTERNAL/ElementBuffer.h>
 #include <INTERNAL/Texture.h>
 
-#include <TESTS/Test3D.h>
+#include <TESTS/TestCamera.h>
 
 #include <VENDOR/IMGUI/imgui.h>
 
@@ -15,13 +15,38 @@
 
 namespace test
 {
-    float init_time;
-    Test3D::Test3D()
-        : m_VertexArray(), m_VertexBuffer(), m_ElementBuffer(), 
-          m_Shader("../res/shaders/basic3D.glsl"), m_Texture("../res/textures/buba.png"),
-          m_Camera(0.0f, 0.0f, -50.0f), m_Rotation(0.0f), m_Diff(0.0f)
+    double offset_mouse_x = 0;
+    double offset_mouse_y = 0;
+    double last_x = 0;
+    double last_y = 0;
+    bool first = true;
+
+    void mouse_callback(GLFWwindow *window, double x, double y)
     {
-        init_time = glfwGetTime();
+        float sensitivity = 0.01f;
+
+        if(first)
+        {
+            last_x = x;
+            last_y = y;
+            first = false;
+        }
+
+        offset_mouse_x += (x - last_x) * sensitivity;
+        offset_mouse_y += (last_y - y) * sensitivity;
+        last_x = x;
+        last_y = y;
+        // if(offset_mouse_y > 89.f) offset_mouse_y = 89.0f;
+        // if(offset_mouse_y < -89.f) offset_mouse_y = -89.0f;
+    }
+
+    TestCamera::TestCamera()
+        : m_VertexArray(), m_VertexBuffer(), m_ElementBuffer(), 
+          m_Shader("../res/shaders/basic3D.glsl"), m_Texture("../res/textures/trump.png"),
+          m_Camera(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
+          m_Rotation(0.0f), m_Diff(0.11f), m_Deltatime(0.0f)
+    {
+
         float vertices[] = {
             // front
             -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
@@ -86,80 +111,73 @@ namespace test
         m_VertexArray.Unbind();
     }
 
-    Test3D::~Test3D()
+    TestCamera::~TestCamera()
     {
     }
 
-    void Test3D::onUpdate(float deltaTime)
+    void TestCamera::onUpdate(float deltatime) {}
+
+    void TestCamera::setMouseOption(GLFWwindow *window)
     {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        glfwSetCursorPosCallback(window, mouse_callback);
     }
 
-    void Test3D::onRender(const Renderer &renderer)
+    void TestCamera::onRender(const Renderer &renderer)
     {
-        float timestamp = glfwGetTime() - init_time;
+        m_Deltatime = glfwGetTime() - m_Deltatime;
+        m_Camera.setDirectionOffset(offset_mouse_x, offset_mouse_y);
+
         glm::mat4 view(1.0f);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, m_Camera.z));
-        view = glm::rotate(view, glm::radians((float)timestamp * 10), glm::vec3(0.0f, 1.0f, 0.0f));
+        view = m_Camera.getView();
         m_Shader.SetUniformMat4f("u_View", view);
 
         glm::mat4 projection(1.0f);
         projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
         m_Shader.SetUniformMat4f("u_Projection", projection);
-        unsigned int n_Particles = 2000;
-        for (int i = 0; i < abs(sin((float)timestamp * 6.28 / 60)*n_Particles); i++)
-        {
 
+        unsigned int n_Particles = 1000;
+        for (int i = 0; i < n_Particles; i++)
+        {
             glm::mat4 model(1.0f);
             model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
-            model = glm::scale(model, glm::vec3(0.1f * i / 20, 0.1f * i / 20,0.1f * i / 20));
-            model = glm::translate(model, glm::vec3(i*cos(i*5.1/10)/40, i/40, i*sin(i*(5.1 + sin(m_Diff)*0.5)/10)/40));
-            model = glm::rotate(model, glm::radians((float)timestamp * 90), glm::normalize(glm::vec3(0.3f, 0.1f, 0.6f)));
+            model = glm::translate(model, glm::vec3(i*cos(i*5.1/10)/10, i/10, i*sin(i*(5.1 + sin(m_Diff)*0.5)/10)/10));
+            model = glm::rotate(model, glm::radians((float) glfwGetTime() * 90), glm::normalize(glm::vec3(0.3f, 0.1f, 0.6f)));
             m_Shader.SetUniformMat4f("u_Model", model);
 
             // thousands of draw calls yess
             renderer.Draw(m_VertexArray, m_ElementBuffer, m_Shader);
-
-            model = glm::mat4(1.0f);
-            model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
-            model = glm::scale(model, glm::vec3(0.1f * i / 20, 0.1f * i / 20,0.1f * i / 20));
-            model = glm::translate(model, glm::vec3(i*cos(i*5.1/10)/40, -i/40, i*sin(i*(5.1 + sin(m_Diff)*0.5)/10)/40));
-            model = glm::rotate(model, glm::radians((float)timestamp * 90), glm::normalize(glm::vec3(0.3f, 0.1f, 0.6f)));
-            m_Shader.SetUniformMat4f("u_Model", model);
-
-            // thousands of draw calls yess 2
-            renderer.Draw(m_VertexArray, m_ElementBuffer, m_Shader);
         }
-        if ((int)timestamp % 2 == 0)
-            m_Diff += 0.001f;
 
+        float speed = 0.005f * m_Deltatime;
         for ( auto input : m_Inputs)
         {
             switch(input)
             {
-                case GLFW_KEY_UP:
-                    m_Camera.z += 0.1;
+                case GLFW_KEY_W:
+                    m_Camera.move(speed, 0.0f);
                     break;
-                case GLFW_KEY_DOWN:
-                    m_Camera.z -= 0.1;
-                    break;
-                case GLFW_KEY_LEFT:
-                    m_Rotation -= 5.0f;
-                    break;
-                case GLFW_KEY_RIGHT:
-                    m_Rotation += 5.0f;
+                case GLFW_KEY_S:
+                    m_Camera.move(-speed, 0.0f);
                     break;
                 case GLFW_KEY_A:
-                    
+                    m_Camera.move(0.0f, -speed);
+                    break;
+                case GLFW_KEY_D:
+                    m_Camera.move(0.0f, speed);
                     break;
             }
-                
         }
         m_Inputs.clear();
 
     }
 
-    void Test3D::onImGuiRender(GLFWwindow *window)
+    void TestCamera::onImGuiRender(GLFWwindow *window)
     {
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0/(ImGui::GetIO().Framerate), (ImGui::GetIO().Framerate));
+        ImGui::Text("offset_x: %.3f", offset_mouse_x);
+        ImGui::Text("offset_y: %.3f", offset_mouse_y);
+
     }
 }

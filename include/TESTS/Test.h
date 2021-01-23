@@ -1,5 +1,8 @@
 #pragma once
 
+#include <GLEW/glew.h>
+#include <GLFW/glfw3.h>
+
 #include <vector>
 #include <functional>
 #include <string>
@@ -18,7 +21,12 @@ namespace test
             virtual void onRender() {}
             virtual void onRender(const Renderer &renderer) {}
             
-            virtual void onImGuiRender() {}
+            virtual void onImGuiRender(GLFWwindow *window) {}
+
+            virtual void setMouseOption(GLFWwindow *window)
+            {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            }
 
             inline void SetInput(int enumVal)
             { 
@@ -33,7 +41,7 @@ namespace test
         public:
             TestMenu(Test *& currentTestPointer);
 
-            void onImGuiRender() override;
+            void onImGuiRender(GLFWwindow *window) override;
             template<typename T>
             void RegisterTest(const std::string &name)
             {

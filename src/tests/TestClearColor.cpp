@@ -26,7 +26,7 @@ namespace test
         renderer.SetClearColor(m_ClearColor);
     }
 
-    void TestClearColor::onImGuiRender()
+    void TestClearColor::onImGuiRender(GLFWwindow *window)
     {
         ImGui::ColorEdit4("Clear Color", m_ClearColor);
     }
