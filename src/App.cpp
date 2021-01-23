@@ -136,6 +136,8 @@ int main(void)
 
         if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
             currentTest->SetInput(GLFW_KEY_RIGHT);
+        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            currentTest->SetInput(GLFW_KEY_A);
     }
 
     delete currentTest;

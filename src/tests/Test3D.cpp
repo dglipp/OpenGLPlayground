@@ -18,7 +18,7 @@ namespace test
     Test3D::Test3D()
         : m_VertexArray(), m_VertexBuffer(), m_ElementBuffer(), 
           m_Shader("../res/shaders/basic3D.glsl"), m_Texture("../res/textures/buba.png"),
-          m_Camera(0.0f, 0.0f, -5.0f), m_Rotation(0.0f)
+          m_Camera(0.0f, 0.0f, -50.0f), m_Rotation(0.0f), m_Diff(0.0f)
     {
         float vertices[] = {
             // front
@@ -57,6 +57,7 @@ namespace test
             0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
             -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
         };
+        
         unsigned int indices[] = {
             0, 1, 2, 2, 3, 0,
             4, 6, 5, 7, 6, 4,
@@ -93,25 +94,41 @@ namespace test
 
     void Test3D::onRender(const Renderer &renderer)
     {
+        float timestamp = 0;
         glm::mat4 view(1.0f);
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, m_Camera.z));
-        view = glm::rotate(view, glm::radians((float)glfwGetTime() * 90), glm::vec3(0.0f, 1.0f, 0.0f));
+        view = glm::rotate(view, glm::radians((float)glfwGetTime() * 10), glm::vec3(0.0f, 1.0f, 0.0f));
         m_Shader.SetUniformMat4f("u_View", view);
 
         glm::mat4 projection(1.0f);
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
         m_Shader.SetUniformMat4f("u_Projection", projection);
-
-        for (int i = 0; i < 100; i++)
+        unsigned int n_Particles = 2000;
+        for (int i = 0; i < abs(sin((float)glfwGetTime() * 6.28 / 60)*n_Particles); i++)
         {
+
             glm::mat4 model(1.0f);
-            model = glm::translate(model, glm::vec3(i*cos(i*6/10)/10, i/10, i*sin(i*6.28/10)/10));
+            model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
+            model = glm::scale(model, glm::vec3(0.1f * i / 20, 0.1f * i / 20,0.1f * i / 20));
+            model = glm::translate(model, glm::vec3(i*cos(i*5.1/10)/40, i/40, i*sin(i*(5.1 + sin(m_Diff)*0.5)/10)/40));
             model = glm::rotate(model, glm::radians((float)glfwGetTime() * 90), glm::normalize(glm::vec3(0.3f, 0.1f, 0.6f)));
             m_Shader.SetUniformMat4f("u_Model", model);
 
+            // thousands of draw calls yess
+            renderer.Draw(m_VertexArray, m_ElementBuffer, m_Shader);
+
+            model = glm::mat4(1.0f);
+            model = glm::scale(model, glm::vec3(0.1, 0.1, 0.1));
+            model = glm::scale(model, glm::vec3(0.1f * i / 20, 0.1f * i / 20,0.1f * i / 20));
+            model = glm::translate(model, glm::vec3(i*cos(i*5.1/10)/40, -i/40, i*sin(i*(5.1 + sin(m_Diff)*0.5)/10)/40));
+            model = glm::rotate(model, glm::radians((float)glfwGetTime() * 90), glm::normalize(glm::vec3(0.3f, 0.1f, 0.6f)));
+            m_Shader.SetUniformMat4f("u_Model", model);
+
+            // thousands of draw calls yess 2
             renderer.Draw(m_VertexArray, m_ElementBuffer, m_Shader);
         }
-        
+        if ((int)glfwGetTime() % 2 == 0)
+            m_Diff += 0.001f;
 
         for ( auto input : m_Inputs)
         {
@@ -128,6 +145,9 @@ namespace test
                     break;
                 case GLFW_KEY_RIGHT:
                     m_Rotation += 5.0f;
+                    break;
+                case GLFW_KEY_A:
+                    
                     break;
             }
                 

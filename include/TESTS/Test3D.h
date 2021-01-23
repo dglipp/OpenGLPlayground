@@ -27,5 +27,6 @@ namespace test
             Texture m_Texture;
             glm::vec3 m_Camera;
             float m_Rotation;
+            float m_Diff;
     };
 }
