@@ -1,2 +1,2 @@
-# OpenGLSeries
+# OpenGLPlayground
 Code on OGL
