@@ -21,6 +21,7 @@
 #include <TESTS/TestTransforms.h>
 #include <TESTS/Test3D.h>
 #include <TESTS/TestCamera.h>
+#include <TESTS/TestLight.h>
 
 #include <random>
 #include <iostream>
@@ -90,6 +91,7 @@ int main(void)
     testMenu->RegisterTest<test::TestTransforms>("Transformations");
     testMenu->RegisterTest<test::Test3D>("Simple 3D rendering");
     testMenu->RegisterTest<test::TestCamera>("Camera");
+    testMenu->RegisterTest<test::TestLight>("Light");
 
     while (!glfwWindowShouldClose(window))
     {
@@ -146,8 +148,6 @@ int main(void)
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
             currentTest->SetInput(GLFW_KEY_D);
         
-        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            currentTest->SetInput(GLFW_KEY_D);
     }
 
     delete currentTest;
