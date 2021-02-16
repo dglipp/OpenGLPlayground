@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GLEW/glew.h>
+#include <GL/glew.h>
 #include <INTERNAL/ElementBuffer.h>
 #include <INTERNAL/VertexArray.h>
 #include <INTERNAL/Shader.h>
