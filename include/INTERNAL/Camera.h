@@ -11,8 +11,8 @@ class Camera
 
         glm::mat4 & getView() { return m_View; }
         void setDirectionOffset(float x, float y);
+        void rotateDirection(float x, float y);
         void move(float longitudinal, float transverse);
-
 
     private:
         glm::vec3 m_Position;

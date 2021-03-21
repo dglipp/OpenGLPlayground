@@ -22,6 +22,7 @@
 #include <TESTS/Test3D.h>
 #include <TESTS/TestCamera.h>
 #include <TESTS/TestLight.h>
+#include <TESTS/TestToPhong.h>
 
 #include <random>
 #include <iostream>
@@ -71,7 +72,7 @@ int main(void)
     GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GLCall(glEnable(GL_BLEND));
     GLCall(glEnable(GL_DEPTH_TEST));
-    GLCall(glDisable(GL_CULL_FACE));
+    // GLCall(glDisable(GL_CULL_FACE));
 
     Renderer renderer;
 
@@ -92,6 +93,7 @@ int main(void)
     testMenu->RegisterTest<test::Test3D>("Simple 3D rendering");
     testMenu->RegisterTest<test::TestCamera>("Camera");
     testMenu->RegisterTest<test::TestLight>("Light");
+    testMenu->RegisterTest<test::TestToPhong>("Kind of lighting");
 
     while (!glfwWindowShouldClose(window))
     {
@@ -147,6 +149,18 @@ int main(void)
 
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
             currentTest->SetInput(GLFW_KEY_D);
+        
+        if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+            currentTest->SetInput(GLFW_KEY_UP);
+
+        if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+            currentTest->SetInput(GLFW_KEY_DOWN);
+        
+        if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+            currentTest->SetInput(GLFW_KEY_LEFT);
+
+        if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+            currentTest->SetInput(GLFW_KEY_RIGHT);
         
     }
 
