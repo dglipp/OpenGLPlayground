@@ -201,7 +201,8 @@ public:
                                 const GLchar *message)
     {
         std::cerr << "Message: " << message << std::endl;
-        glfwSetWindowShouldClose(window, GL_TRUE);
+        if(severity == GL_DEBUG_SEVERITY_HIGH)
+            glfwSetWindowShouldClose(window, GL_TRUE);
     }
 
     void getMousePosition(int &x, int &y)

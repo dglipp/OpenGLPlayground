@@ -6,7 +6,7 @@
 #include <cmath>
 #include <string>
 
-class Fragment : public App
+class Triangle : public App
 {
     private:
         GLuint m_Program;
@@ -24,7 +24,8 @@ class Fragment : public App
                 " \n"
                 "void main() \n"
                 "{ \n"
-                "gl_Position = vec4(0.0, 0.0, 0.5, 1.0); \n"
+                "const vec4 vertices[3] = vec4[3](vec4(0.25, -0.25, 0.5, 1.0), vec4(-0.25, -0.25, 0.5, 1.0), vec4(0.25, 0.25, 0.5, 1.0)); \n"
+                "gl_Position = vertices[gl_VertexID]; \n"
                 "} \n"
             };
 
@@ -71,8 +72,7 @@ class Fragment : public App
             const GLfloat color[] = {0.0f, 0.0f, 0.3f, 0.0f};
             glClearBufferfv(GL_COLOR, 0, color);
             glUseProgram(m_Program);
-            glDrawArrays(GL_POINTS, 0, 1);
-            glPointSize(400.0f);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
         }
 
         void shutdown()
@@ -82,4 +82,4 @@ class Fragment : public App
         }
 };
 
-MAIN(Fragment);
+MAIN(Triangle);
