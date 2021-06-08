@@ -11,6 +11,7 @@ class Triangle : public App
     private:
         GLuint m_Program;
         GLuint m_VAO;
+        float m_tessGran[4] = {3.0, 30.0, 3.0, 3.0};
 
         GLuint compileShaders()
         {
@@ -32,7 +33,7 @@ class Triangle : public App
                 "} vs_out; \n"
                 "void main() \n"
                 "{ \n"
-                "const vec4 vertices[3] = vec4[3](vec4(0.25, -0.25, 0.5, 1.0), vec4(-0.25, -0.25, 0.5, 1.0), vec4(0.25, 0.25, 0.5, 1.0)); \n"
+                "const vec4 vertices[3] = vec4[3](vec4(-0.5, -0.5 , 0.5, 1.0), vec4(0.5, -0.5, 0.5, 1.0), vec4(0.0, 0.5, 0.5, 1.0)); \n"
                 "gl_Position = vertices[gl_VertexID] + offset; \n"
                 "vs_out.color = color; \n"
                 "} \n"
@@ -43,15 +44,16 @@ class Triangle : public App
                 "#version 420 core \n"
                 " \n"
                 "layout (vertices = 3) out; \n"
+                "uniform vec4 tessGran; \n"
                 " \n"
                 "void main() \n"
                 "{ \n"
                 "if(gl_InvocationID == 0) \n"
                 "{ \n"
-                "gl_TessLevelInner[0] = 5.0; \n"
-                "gl_TessLevelOuter[0] = 5.0; \n"
-                "gl_TessLevelOuter[1] = 5.0; \n"
-                "gl_TessLevelOuter[2] = 5.0; \n"
+                "gl_TessLevelInner[0] = tessGran[0]; \n"
+                "gl_TessLevelOuter[0] = tessGran[1]; \n"
+                "gl_TessLevelOuter[1] = tessGran[2]; \n"
+                "gl_TessLevelOuter[2] = tessGran[3]; \n"
                 "} \n"
                 "gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;"
                 "} \n"
@@ -126,20 +128,30 @@ class Triangle : public App
 
         void render(double time)
         {
+            if(m_tessGran[1] == 30.0f) m_tessGran[2] = +2.0f;
+            if(m_tessGran[1] == 70.0f) m_tessGran[2] = -2.0f;
             const GLfloat clearColor[] = {1.0f, 1.0f, 1.0f, 0.0f};
             GLfloat color[] = {(float) std::abs(std::sin(time * 3)), (float) std::abs(std::sin(time * 5)), (float) std::abs(std::sin(time * 7)), 1.0f};
-            GLfloat offset[] = {(float) std::sin(time * 3) * 0.5f, (float) std::cos(time * 5) * 0.5f, 0.0f, 0.0f};  
+            GLfloat offset[] = {0.0f, 0.0f, 0.0f, 0.0f};  
             glClearBufferfv(GL_COLOR, 0, clearColor);
             glUseProgram(m_Program);
             glVertexAttrib4fv(0, offset);
             glVertexAttrib4fv(1, color);
+            glUniform4f(0, m_tessGran[0], m_tessGran[1], m_tessGran[1], m_tessGran[1]);
             glDrawArrays(GL_PATCHES, 0, 3);
+            m_tessGran[1] += m_tessGran[2];
         }
 
         void shutdown()
         {
             glDeleteVertexArrays(1, &m_VAO);
             glDeleteProgram(m_Program);
+        }
+        
+        void onKey(int key, int action)
+        {
+            if(key == 265 && action == 1) m_tessGran[0]++;
+            if(key == 264 && action == 1) m_tessGran[0]--;
         }
 };
 
