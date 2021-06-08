@@ -34,7 +34,7 @@ target_link_libraries(fragment OpenGL::GL glfw3 GLEW dl X11 pthread)
 add_executable(triangle ${SOURCES} ${TRIANGLE})
 target_link_libraries(triangle OpenGL::GL glfw3 GLEW dl X11 pthread)
 
-set_target_properties(windowtest clearcolor
+set_target_properties(windowtest clearcolor fragment triangle
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
