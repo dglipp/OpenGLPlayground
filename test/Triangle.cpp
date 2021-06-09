@@ -33,7 +33,7 @@ class Triangle : public App
                 "} vs_out; \n"
                 "void main() \n"
                 "{ \n"
-                "const vec4 vertices[3] = vec4[3](vec4(-0.5, -0.5 , 0.5, 1.0), vec4(0.5, -0.5, 0.5, 1.0), vec4(0.0, 0.5, 0.5, 1.0)); \n"
+                "const vec4 vertices[3] = vec4[3](vec4(-1.0, -1.0 , 1.0, 1.0), vec4(1.0, -1.0, 1.0, 1.0), vec4(0.0, 1.0, 1.0, 1.0)); \n"
                 "gl_Position = vertices[gl_VertexID] + offset; \n"
                 "vs_out.color = color; \n"
                 "} \n"
@@ -64,10 +64,11 @@ class Triangle : public App
                 "#version 420 core \n"
                 " \n"
                 "layout (triangles, equal_spacing, cw) in; \n"
+                "uniform vec3 mover; \n"
                 " \n"
                 "void main() \n"
                 "{ \n"
-                "gl_Position = (gl_TessCoord.x * gl_in[0].gl_Position + gl_TessCoord.y * gl_in[1].gl_Position + gl_TessCoord.z * gl_in[2].gl_Position); \n"
+                "gl_Position = (gl_TessCoord.x * gl_in[0].gl_Position*mover[0] + gl_TessCoord.y * gl_in[1].gl_Position*mover[1] + gl_TessCoord.z * gl_in[2].gl_Position*mover[2]); \n"
                 "} \n"
             };
 
@@ -137,7 +138,8 @@ class Triangle : public App
             glUseProgram(m_Program);
             glVertexAttrib4fv(0, offset);
             glVertexAttrib4fv(1, color);
-            glUniform4f(0, m_tessGran[0], m_tessGran[1], m_tessGran[1], m_tessGran[1]);
+            glUniform4f(glGetUniformLocation(m_Program, "tessGran"), m_tessGran[0], m_tessGran[1], m_tessGran[1], m_tessGran[1]);
+            glUniform3f(glGetUniformLocation(m_Program, "mover"), (float) std::abs(std::sin(time/1.5))*10, (float) std::abs(std::sin(time/2.5))*10, (float) std::abs(std::sin(time/5.0))*10);
             glDrawArrays(GL_PATCHES, 0, 3);
             m_tessGran[1] += m_tessGran[2];
         }
