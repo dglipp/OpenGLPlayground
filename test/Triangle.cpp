@@ -89,36 +89,36 @@ class Triangle : public App
             };
 
             GLchar message[1024];
-
+            GLsizei len;
             vertexShader = glCreateShader(GL_VERTEX_SHADER);
             glShaderSource(vertexShader, 1, vertSource, NULL);
             glCompileShader(vertexShader);
-            glGetShaderInfoLog(vertexShader, 1024, nullptr, message);
-            std::cout << "VERTEX: " << message << std::endl;
-
+            glGetShaderInfoLog(vertexShader, 1024, &len, message);
+            if (len) std::cout << "VERTEX: " << message << std::endl;
+            
             tessControlShader = glCreateShader(GL_TESS_CONTROL_SHADER);
             glShaderSource(tessControlShader, 1, tessControlSource, NULL);
             glCompileShader(tessControlShader);
-            glGetShaderInfoLog(tessControlShader, 1024, nullptr, message);
-            std::cout << "TCS: "<< message << std::endl;
+            glGetShaderInfoLog(tessControlShader, 1024, &len, message);
+            if (len) std::cout << "TCS: "<< message << std::endl;
 
             tessEvalShader = glCreateShader(GL_TESS_EVALUATION_SHADER);
             glShaderSource(tessEvalShader, 1, tessEvalSource, NULL);
             glCompileShader(tessEvalShader);
-            glGetShaderInfoLog(tessEvalShader, 1024, nullptr, message);
-            std::cout << "TES: "<< message << std::endl;
+            glGetShaderInfoLog(tessEvalShader, 1024, &len, message);
+            if (len) std::cout << "TES: "<< message << std::endl;
 
             geomShader = glCreateShader(GL_GEOMETRY_SHADER);
             glShaderSource(geomShader, 1, geomSource, NULL);
             glCompileShader(geomShader);
-            glGetShaderInfoLog(geomShader, 1024, nullptr, message);
-            std::cout << "GEOMETRY: "<< message << std::endl;
+            glGetShaderInfoLog(geomShader, 1024, &len, message);
+            if (len) std::cout << "GEOMETRY: "<< message << std::endl;
 
             fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
             glShaderSource(fragmentShader, 1, fragSource, NULL);
             glCompileShader(fragmentShader);
-            glGetShaderInfoLog(fragmentShader, 1024, nullptr, message);
-            std::cout << "FRAGMENT: "<< message << std::endl;
+            glGetShaderInfoLog(fragmentShader, 1024, &len, message);
+            if (len) std::cout << "FRAGMENT: "<< message << std::endl;
             
             program = glCreateProgram();
             glAttachShader(program, vertexShader);
@@ -133,8 +133,8 @@ class Triangle : public App
             glDeleteShader(tessEvalShader);
             glDeleteShader(geomShader);
             glDeleteShader(fragmentShader);
-            glGetProgramInfoLog(program, 1024, nullptr, message);
-            std::cout << "PROGRAM: "<< message << std::endl;
+            glGetProgramInfoLog(program, 1024, &len, message);
+            if (len) std::cout << "PROGRAM: "<< message << std::endl;
             return program;
         }
 
@@ -156,7 +156,7 @@ class Triangle : public App
             glClearBufferfv(GL_COLOR, 0, clearColor);
             glUseProgram(m_Program);
             glVertexAttrib4fv(0, offset);
-            glPointSize(5.0);
+            glPointSize(2.0);
             glUniform4f(glGetUniformLocation(m_Program, "tessGran"), m_tessGran[0], m_tessGran[1], m_tessGran[1], m_tessGran[1]);
             glUniform3f(glGetUniformLocation(m_Program, "mover"), (float) std::abs(std::sin(time/1.5))*10, (float) std::abs(std::sin(time/2.5))*10, (float) std::abs(std::sin(time/5.0))*10);
             glDrawArrays(GL_PATCHES, 0, 3);
