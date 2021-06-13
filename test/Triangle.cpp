@@ -84,7 +84,10 @@ class Triangle : public App
                 "out vec4 color; \n"
                 "void main() \n"
                 "{ \n"
-                "color = vec4(1.0f, 0.5f, 1.0f, 1.0f); \n"
+                "color = vec4(sin(gl_FragCoord.x * 0.25) *0.5 + 0.5, "
+                "0.0," 
+                "sin(gl_FragCoord.x * 0.15) * cos(gl_FragCoord.y * 0.15) + 0.5,"
+                "1.0); \n"
                 "} \n"
             };
 
@@ -151,12 +154,12 @@ class Triangle : public App
         {
             if(m_tessGran[1] == 30.0f) m_tessGran[2] = +2.0f;
             if(m_tessGran[1] == 70.0f) m_tessGran[2] = -2.0f;
-            const GLfloat clearColor[] = {0.0f, 0.0f, 0.0f, 0.0f};
+            const GLfloat clearColor[] = {0.0f, 0.0f, 0.1f, 0.0f};
             GLfloat offset[] = {0.0f, 0.0f, 0.0f, 0.0f};  
             glClearBufferfv(GL_COLOR, 0, clearColor);
             glUseProgram(m_Program);
             glVertexAttrib4fv(0, offset);
-            glPointSize(2.0);
+            glPointSize(4.0);
             glUniform4f(glGetUniformLocation(m_Program, "tessGran"), m_tessGran[0], m_tessGran[1], m_tessGran[1], m_tessGran[1]);
             glUniform3f(glGetUniformLocation(m_Program, "mover"), (float) std::abs(std::sin(time/1.5))*10, (float) std::abs(std::sin(time/2.5))*10, (float) std::abs(std::sin(time/5.0))*10);
             glDrawArrays(GL_PATCHES, 0, 3);
