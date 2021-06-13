@@ -21,6 +21,7 @@ file(GLOB WINDOWTEST "test/WindowTest.cpp")
 file(GLOB CLEARCOLOR "test/ClearColor.cpp")
 file(GLOB FRAGMENT "test/Fragment.cpp")
 file(GLOB TRIANGLE "test/Triangle.cpp")
+file(GLOB FRAGMENTINTERPOL "test/FragmentInterpolation.cpp")
 
 add_executable(windowtest ${SOURCES} ${WINDOWTEST})
 target_link_libraries(windowtest OpenGL::GL glfw3 GLEW dl X11 pthread)
@@ -33,6 +34,9 @@ target_link_libraries(fragment OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(triangle ${SOURCES} ${TRIANGLE})
 target_link_libraries(triangle OpenGL::GL glfw3 GLEW dl X11 pthread)
+
+add_executable(fragmentInterpol ${SOURCES} ${FRAGMENTINTERPOL})
+target_link_libraries(fragmentInterpol OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 set_target_properties(windowtest clearcolor fragment triangle
     PROPERTIES
