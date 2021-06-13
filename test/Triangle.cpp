@@ -24,7 +24,7 @@ class Triangle : public App
 
             static const GLchar * vertSource[] = 
             {
-                "#version 420 core \n"
+                "#version 450 core \n"
                 "layout (location = 0) in vec4 offset; \n"
                 "void main() \n"
                 "{ \n"
@@ -35,7 +35,7 @@ class Triangle : public App
 
             static const GLchar * tessControlSource[] =
             {
-                "#version 420 core \n"
+                "#version 450 core \n"
                 "layout (vertices = 3) out; \n"
                 "uniform vec4 tessGran; \n"
                 "void main() \n"
@@ -53,7 +53,7 @@ class Triangle : public App
 
             static const GLchar * tessEvalSource[] = 
             {
-                "#version 420 core \n"
+                "#version 450 core \n"
                 "layout (triangles, equal_spacing, cw) in; \n"
                 "uniform vec3 mover; \n"
                 "void main() \n"
@@ -64,7 +64,7 @@ class Triangle : public App
 
             static const GLchar * geomSource[] = 
             {
-                "#version 420 core \n"
+                "#version 450 core \n"
                 "layout (triangles) in; \n"
                 "layout (points, max_vertices = 3) out; \n"
                 "void main() \n"
@@ -80,7 +80,7 @@ class Triangle : public App
 
             static const GLchar * fragSource[] = 
             {
-                "#version 420 core \n"
+                "#version 450 core \n"
                 "out vec4 color; \n"
                 "void main() \n"
                 "{ \n"
