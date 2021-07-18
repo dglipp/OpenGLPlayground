@@ -2,13 +2,15 @@
 
 #include <string>
 #include <fstream>
+#include <iostream>
+#include <INTERNAL/Structures.h>
 
 namespace loaders
 {
     class Loader
     {
-        private:
-            std::fstream m_file;
+        protected:
+            std::ifstream m_file;
 
         public:
             Loader(std::string path)
@@ -21,14 +23,20 @@ namespace loaders
                 m_file.close();
             }
 
-            virtual Mesh loadMesh();
+            virtual str::Object loadMesh() = 0;
     };
 
-    class ObjLoader: Loader
+    class ObjLoader : Loader
     {
         private:
-        
+
         public:
-            Mesh loadMesh();
-    }
+            ObjLoader(std::string path)
+                : Loader(path)
+            {
+
+            }
+
+            str::Object loadMesh();
+    };
 }

@@ -23,6 +23,7 @@ file(GLOB FRAGMENT "test/Fragment.cpp")
 file(GLOB TRIANGLE "test/Triangle.cpp")
 file(GLOB FRAGMENTINTERPOL "test/FragmentInterpolation.cpp")
 file(GLOB DATATOGPU "test/DataToGPU.cpp")
+file(GLOB MESHLOAD "test/MeshLoading.cpp")
 
 add_executable(windowtest ${SOURCES} ${WINDOWTEST})
 target_link_libraries(windowtest OpenGL::GL glfw3 GLEW dl X11 pthread)
@@ -41,6 +42,9 @@ target_link_libraries(fragmentInterpol OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(dataToGPU ${SOURCES} ${DATATOGPU})
 target_link_libraries(dataToGPU OpenGL::GL glfw3 GLEW dl X11 pthread)
+
+add_executable(MESHLOAD ${SOURCES} ${MESHLOAD})
+target_link_libraries(MESHLOAD OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 set_target_properties(windowtest clearcolor fragment triangle
     PROPERTIES
