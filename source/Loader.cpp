@@ -1,58 +1,40 @@
-#include <INTERNAL/Loader.h>
-#include <INTERNAL/Structures.h>
 #include <iostream>
 #include <vector>
+#include <regex>
+
+#include <INTERNAL/Loader.h>
+#include <INTERNAL/Structures.h>
 
 namespace loaders
 {
-    str::Object ObjLoader::loadMesh()
+    str::Mesh ObjLoader::loadMesh(std::string name)
     {
-        if (m_file) {
-            m_file.seekg (0, m_file.end);
-            unsigned int length = m_file.tellg();
-            m_file.seekg (0, m_file.beg);
+        /*
+            Scan each line of file.
+            Find for each line its kind (v, vn, vt, f) and add the appropriate struct
+            Vertex, Normal, TexCoord, Face (See Structures.h for definition)
+            to the corresponding Vector.
 
-            char * buffer = new char [length];
+            If face index is relative (-1) transform to absolute. 
+            Face indices are 0-based for manageability with OGL.
+        */
+        std::string line_str;
+        std::vector<std::string> line_vec;
+        std::string token;
 
-            m_file.read(buffer,length);
-
-            std::vector<str::Vertex> vertices;
-
-            for(int i=0; i<length; i++)
+        while(m_file)
+        {
+            std::getline(m_file, line_str);
+            std::istringstream ss(line_str);
+            
+            while (ss >> token)
             {
-                if(buffer[i] == 'v')
-                {
-                    str::Vertex vert(0.0,0.0,0.0,1.0);
-                    int j = 2;
-                    int idx = 0;
-                    std::string element("");
-
-                    do
-                    {
-                        if(buffer[i+j] != ' ')
-                            element += buffer[i+j];
-                        else
-                        {
-                            std::cout << element.c_str() << std::endl;
-                            vert.v[idx] = std::stod(element.c_str());
-                            ++idx;
-                            element = "";
-                        }
-                        ++j;
-                    }while(buffer[i+j] != '\n');
-                    j = 2;
-                    idx = 0;
-                    vertices.push_back(vert);
-                }
+                line_vec.push_back(token);
+                // TODO: here add vector line parser based on first element (v, vt, vn, f)
             }
-            std::cout << "suze:     ";
-            std::cout << vertices.size() << std::endl;
-            std::cout << "el:     ";
-
-            std::cout << buffer << std::endl;
-            delete[] buffer;
+            line_vec.clear();
         }
-        str::Object obj;
+        str::Mesh obj(name);
         return obj;
     }
 }

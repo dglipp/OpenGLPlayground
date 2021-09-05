@@ -55,29 +55,18 @@ namespace str
     class Mesh
     {
         private:
+            std::string m_name;
             std::vector<Vertex> m_verts;
             std::vector<Normal> m_norms;
             std::vector<TexCoord> m_texCoords;
 
-            std::vector<Face> m_Faces;
+            std::vector<Face> m_faces;
                     
         public:
-            Mesh();
-            Mesh(std::vector<Vertex> & verts, std::vector<Normal> & norms, std::vector<TexCoord> & texCoords);
-            Mesh(std::vector<Vertex> & verts, std::vector<Normal> & norms);
-            Mesh(std::vector<Vertex> & verts, std::vector<TexCoord> & texCoords);
-            Mesh(std::vector<Vertex> & verts);
-    };
-
-    class Object
-    {
-        private:
-            std::string m_Name;
-            std::vector<Mesh> m_Meshes;
-        
-        public:
-            Object();
-            Object(std::string name);
-            Object(std::string name, std::vector<Mesh> meshes);
+            Mesh(std::string name);
+            Mesh(std::string name, std::vector<Vertex> & verts, std::vector<Normal> & norms, std::vector<TexCoord> & texCoords, std::vector<Face> & faces);
+            Mesh(std::string name, std::vector<Vertex> & verts, std::vector<Normal> & norms, std::vector<Face> & faces);
+            Mesh(std::string name, std::vector<Vertex> & verts, std::vector<TexCoord> & texCoords, std::vector<Face> & faces);
+            Mesh(std::string name, std::vector<Vertex> & verts, std::vector<Face> & faces);
     };
 }

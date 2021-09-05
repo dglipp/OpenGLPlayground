@@ -2,42 +2,28 @@
 
 namespace str
 {
-    Mesh::Mesh()
+    Mesh::Mesh(std::string name)
+        : m_name(name)
     {
     }
 
-    Mesh::Mesh(std::vector<Vertex> & verts, std::vector<Normal> & norms, std::vector<TexCoord> & texCoords)
-        : m_verts(verts), m_norms(norms), m_texCoords(texCoords)
+    Mesh::Mesh(std::string name, std::vector<Vertex> & verts, std::vector<Normal> & norms, std::vector<TexCoord> & texCoords, std::vector<Face> & faces)
+        : m_name(name), m_verts(verts), m_norms(norms), m_texCoords(texCoords), m_faces(faces)
     {
     }
 
-    Mesh::Mesh(std::vector<Vertex> & verts, std::vector<Normal> & norms)
-        : m_verts(verts), m_norms(norms)
+    Mesh::Mesh(std::string name, std::vector<Vertex> & verts, std::vector<Normal> & norms, std::vector<Face> & faces)
+        : m_name(name), m_verts(verts), m_norms(norms), m_faces(faces)
     {
     }
 
-    Mesh::Mesh(std::vector<Vertex> & verts, std::vector<TexCoord> & texCoords)
-        : m_verts(verts), m_texCoords(texCoords)
+    Mesh::Mesh(std::string name, std::vector<Vertex> & verts, std::vector<TexCoord> & texCoords, std::vector<Face> & faces)
+        : m_name(name), m_verts(verts), m_texCoords(texCoords), m_faces(faces)
     {
     }
 
-    Mesh::Mesh(std::vector<Vertex> & verts)
-        : m_verts(verts)
-    {
-    }
-
-    Object::Object()
-        : m_Name("")
-    {
-    }
-
-    Object::Object(std::string name)
-        : m_Name(name)
-    {
-    }
-
-    Object::Object(std::string name, std::vector<Mesh> meshes)
-        : m_Name(name), m_Meshes(meshes)
+    Mesh::Mesh(std::string name, std::vector<Vertex> & verts, std::vector<Face> & faces)
+        : m_name(name), m_verts(verts), m_faces(faces)
     {
     }
 }

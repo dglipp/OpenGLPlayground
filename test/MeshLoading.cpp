@@ -2,12 +2,13 @@
 #include <string>
 #include <iostream>
 
+
 int main()
 {
+    using namespace std::string_literals;
     try
     {
-    loaders::ObjLoader loader(std::string("../res/models/cube.obj"));
-    loader.loadMesh();
+    loaders::ObjLoader loader("../res/models/cube.obj"s);
     }
     catch(const std::exception& e)
     {
