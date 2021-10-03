@@ -54,12 +54,7 @@ namespace loaders
     class ObjLoader : Loader
     {
         private:
-            /**
-             * @brief Obj file loader function
-             * 
-             * @return Returs an Object object 
-             */
-            str::Mesh loadMesh(std::string name);
+
 
         public:
             /**
@@ -68,7 +63,13 @@ namespace loaders
             ObjLoader(std::string path, std::string name="")
                 : Loader(path, name)
             {
-                loadMesh(name);
             }
+
+            /**
+             * @brief Obj file loader function
+             * 
+             * @return Returns a Mesh object 
+             */
+            str::Mesh loadMesh(std::string name);
     };
 }

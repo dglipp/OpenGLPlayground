@@ -26,4 +26,44 @@ namespace str
         : m_name(name), m_verts(verts), m_faces(faces)
     {
     }
+
+    Mesh::Mesh(const Mesh & mesh)
+    {
+        m_name = mesh.m_name;
+        m_verts = mesh.m_verts;
+        m_norms = mesh.m_norms;
+        m_texCoords = mesh.m_texCoords;
+        m_faces = mesh.m_faces;
+    }
+
+    Mesh & Mesh::operator=(const Mesh & mesh)
+    {
+        m_name = mesh.m_name;
+        m_verts = mesh.m_verts;
+        m_norms = mesh.m_norms;
+        m_texCoords = mesh.m_texCoords;
+        m_faces = mesh.m_faces;
+
+        return *this;
+    }
+
+    Mesh::Mesh(Mesh && mesh)
+        : m_name(std::move(mesh.m_name))
+        , m_verts(std::move(mesh.m_verts))
+        , m_norms(std::move(mesh.m_norms))
+        , m_texCoords(std::move(mesh.m_texCoords))
+        , m_faces(std::move(mesh.m_faces))
+    {
+    }
+
+    Mesh & Mesh::operator=(Mesh && mesh)
+    {
+        m_name = std::move(mesh.m_name);
+        m_verts = std::move(mesh.m_verts);
+        m_norms = std::move(mesh.m_norms);
+        m_texCoords = std::move(mesh.m_texCoords);
+        m_faces = std::move(mesh.m_faces);
+
+        return *this;
+    }
 }
