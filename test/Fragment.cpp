@@ -1,78 +1,65 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <INTERNAL/App.h>
-
 #include <cmath>
 #include <string>
+#include <vector>
+
+#include <INTERNAL/App.h>
+#include <INTERNAL/ShaderUtility.h>
+
 
 class Fragment : public App
 {
     private:
         GLuint m_Program;
         GLuint m_VAO;
-
-        GLuint compileShaders()
-        {
-            GLuint vertexShader;
-            GLuint fragmentShader;
-            GLuint program;
-
-            static const GLchar * vertSource[] = 
-            {
-                "#version 450 core \n"
-                " \n"
-                "void main() \n"
-                "{ \n"
-                "gl_Position = vec4(0.0, 0.0, 0.5, 1.0); \n"
-                "} \n"
-            };
-
-            static const GLchar * fragSource[] = 
-            {
-                "#version 450 core \n"
-                " \n"
-                "out vec4 color; \n"
-                "void main() \n"
-                "{ \n"
-                "color = vec4(0.0, 0.8, 1.0, 1.0); \n"
-                "} \n"
-            };
-
-            vertexShader = glCreateShader(GL_VERTEX_SHADER);
-            glShaderSource(vertexShader, 1, vertSource, NULL);
-            glCompileShader(vertexShader);
-
-            fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-            glShaderSource(fragmentShader, 1, fragSource, NULL);
-            glCompileShader(fragmentShader);
-
-            program = glCreateProgram();
-            glAttachShader(program, vertexShader);
-            glAttachShader(program, fragmentShader);
-            glLinkProgram(program);
-
-            glDeleteShader(vertexShader);
-            glDeleteShader(fragmentShader);
-
-            return program;
-        }
+        GLuint m_Buffer;
 
     public:
         void startup()
         {
-            m_Program = compileShaders();
+            static const GLfloat vertices[6][2] = 
+            {
+                {-0.9, -0.9},
+                {0.85, -0.9},
+                {-0.9, 0.85},
+                {0.9, -0.85},
+                {0.9, 0.9},
+                {-0.85, 0.9},
+            };
+
             glCreateVertexArrays(1, &m_VAO);
+
+            glCreateBuffers(1, &m_Buffer);
+            glNamedBufferStorage(m_Buffer, sizeof(vertices), vertices, 0);
+
+            std::vector<ShaderInfo> shaders =
+            {
+                {GL_VERTEX_SHADER, "/home/dglipp/Projects/OpenGLPlayground/res/shaders/triangles.vert.glsl"}
+                //{GL_FRAGMENT_SHADER, "/home/dglipp/Projects/OpenGLPlayground/res/shaders/triangles.frag.glsl"},
+            };
+
+            GlslLoader loader(shaders);
+            GLuint program = loader.getProgram();
+
+            glUseProgram(program);
+
+            glGenVertexArrays(1, &m_VAO);
             glBindVertexArray(m_VAO);
+            glBindBuffer(GL_ARRAY_BUFFER, m_Buffer);
+            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(0);
         }
 
         void render(double time)
         {
             const GLfloat color[] = {0.0f, 0.0f, 0.3f, 0.0f};
             glClearBufferfv(GL_COLOR, 0, color);
-            glUseProgram(m_Program);
-            glDrawArrays(GL_POINTS, 0, 1);
-            glPointSize(400.0f);
+
+
+            glBindVertexArray(m_VAO);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
         }
 
         void shutdown()

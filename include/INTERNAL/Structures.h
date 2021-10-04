@@ -118,5 +118,7 @@ namespace str
             {
                 return m_faces.size() > i ? m_faces[i] : str::Face();
             }
+
+            void render();
     };
 }

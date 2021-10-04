@@ -46,7 +46,7 @@ target_link_libraries(dataToGPU OpenGL::GL glfw3 GLEW dl X11 pthread)
 add_executable(MESHLOAD ${SOURCES} ${MESHLOAD})
 target_link_libraries(MESHLOAD OpenGL::GL glfw3 GLEW dl X11 pthread)
 
-set_target_properties(windowtest clearcolor fragment triangle
+set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU MESHLOAD
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"

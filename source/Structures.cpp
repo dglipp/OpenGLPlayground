@@ -66,4 +66,9 @@ namespace str
 
         return *this;
     }
+
+    void Mesh::render()
+    {
+        
+    }
 }
