@@ -97,31 +97,31 @@ class Triangle : public App
             glShaderSource(vertexShader, 1, vertSource, NULL);
             glCompileShader(vertexShader);
             glGetShaderInfoLog(vertexShader, 1024, &len, message);
-            if (len) std::cout << "VERTEX: " << message << std::endl;
+            if (len) std::cout << "VERTEX: " << message << '\n';
             
             tessControlShader = glCreateShader(GL_TESS_CONTROL_SHADER);
             glShaderSource(tessControlShader, 1, tessControlSource, NULL);
             glCompileShader(tessControlShader);
             glGetShaderInfoLog(tessControlShader, 1024, &len, message);
-            if (len) std::cout << "TCS: "<< message << std::endl;
+            if (len) std::cout << "TCS: "<< message << '\n';
 
             tessEvalShader = glCreateShader(GL_TESS_EVALUATION_SHADER);
             glShaderSource(tessEvalShader, 1, tessEvalSource, NULL);
             glCompileShader(tessEvalShader);
             glGetShaderInfoLog(tessEvalShader, 1024, &len, message);
-            if (len) std::cout << "TES: "<< message << std::endl;
+            if (len) std::cout << "TES: "<< message << '\n';
 
             geomShader = glCreateShader(GL_GEOMETRY_SHADER);
             glShaderSource(geomShader, 1, geomSource, NULL);
             glCompileShader(geomShader);
             glGetShaderInfoLog(geomShader, 1024, &len, message);
-            if (len) std::cout << "GEOMETRY: "<< message << std::endl;
+            if (len) std::cout << "GEOMETRY: "<< message << '\n';
 
             fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
             glShaderSource(fragmentShader, 1, fragSource, NULL);
             glCompileShader(fragmentShader);
             glGetShaderInfoLog(fragmentShader, 1024, &len, message);
-            if (len) std::cout << "FRAGMENT: "<< message << std::endl;
+            if (len) std::cout << "FRAGMENT: "<< message << '\n';
             
             program = glCreateProgram();
             glAttachShader(program, vertexShader);
@@ -137,7 +137,7 @@ class Triangle : public App
             glDeleteShader(geomShader);
             glDeleteShader(fragmentShader);
             glGetProgramInfoLog(program, 1024, &len, message);
-            if (len) std::cout << "PROGRAM: "<< message << std::endl;
+            if (len) std::cout << "PROGRAM: "<< message << '\n';
             return program;
         }
 

@@ -49,13 +49,13 @@ class FragmentInterpol : public App
             glShaderSource(vertexShader, 1, vertSource, NULL);
             glCompileShader(vertexShader);
             glGetShaderInfoLog(vertexShader, 1024, &len, message);
-            if (len) std::cout << "VERTEX: " << message << std::endl;
+            if (len) std::cout << "VERTEX: " << message << '\n';
             
             fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
             glShaderSource(fragmentShader, 1, fragSource, NULL);
             glCompileShader(fragmentShader);
             glGetShaderInfoLog(fragmentShader, 1024, &len, message);
-            if (len) std::cout << "FRAGMENT: "<< message << std::endl;
+            if (len) std::cout << "FRAGMENT: "<< message << '\n';
             
             program = glCreateProgram();
             glAttachShader(program, vertexShader);
@@ -65,7 +65,7 @@ class FragmentInterpol : public App
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
             glGetProgramInfoLog(program, 1024, &len, message);
-            if (len) std::cout << "PROGRAM: "<< message << std::endl;
+            if (len) std::cout << "PROGRAM: "<< message << '\n';
             return program;
         }
 

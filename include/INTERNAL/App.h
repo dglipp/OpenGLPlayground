@@ -41,7 +41,7 @@ public:
 
         if (!glfwInit())
         {
-            std::cerr << "Failed to initialize GLFW" << std::endl;
+            std::cerr << "Failed to initialize GLFW" << '\n';
             return;
         }
 
@@ -80,7 +80,7 @@ public:
             window = glfwCreateWindow(info.windowWidth, info.windowHeight, info.title.c_str(), info.flags.fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
             if (!window)
             {
-                std::cerr << "Failed to create a new window" << std::endl;
+                std::cerr << "Failed to create a new window" << '\n';
                 return;
             }
         }
@@ -101,21 +101,21 @@ public:
 
         glewInit();
 
-        std::cout << "VENDOR: " << (char *) glGetString(GL_VENDOR) << std::endl;
-        std::cout << "VERSION: " << (char *) glGetString(GL_VERSION) << std::endl;
-        std::cout << "RENDERER: " << (char *) glGetString(GL_RENDERER) << std::endl;
+        std::cout << "VENDOR: " << (char *) glGetString(GL_VENDOR) << '\n';
+        std::cout << "VERSION: " << (char *) glGetString(GL_VERSION) << '\n';
+        std::cout << "RENDERER: " << (char *) glGetString(GL_RENDERER) << '\n';
 
         if (info.flags.debug)
         {
             if (glewIsSupported("GL_VERSION_4_3"))
             {
-                std::cout << "Debug supported" << std::endl;
+                std::cout << "Debug supported" << '\n';
                 glDebugMessageCallback((GLDEBUGPROC)debug_callback, this);
                 glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
             }
             else if (glewIsExtensionSupported("GL_ARB_debug_output"))
             {
-                std::cout << "Debug ARB supported" << std::endl;
+                std::cout << "Debug ARB supported" << '\n';
                 glDebugMessageCallbackARB((GLDEBUGPROC)debug_callback, this);
                 glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
             }
@@ -146,7 +146,7 @@ public:
         info.windowHeight = 1200;
 
         info.majorVersion = 4;
-        info.minorVersion = 3;
+        info.minorVersion = 5;
         info.samples = 0;
         info.flags.all = 0;
         info.flags.cursor = 1;
@@ -200,7 +200,7 @@ public:
                                 GLsizei length,
                                 const GLchar *message)
     {
-        std::cerr << "Message: " << message << std::endl;
+        std::cerr << "Message: " << message << '\n';
         if(severity == GL_DEBUG_SEVERITY_HIGH)
             glfwSetWindowShouldClose(window, GL_TRUE);
     }

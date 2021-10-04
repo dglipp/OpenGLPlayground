@@ -14,7 +14,7 @@ int main()
 
    if(!glfwInit())
    {
-      std::cout << "ERROR: GLFW failed to Initialize" << std::endl;
+      std::cout << "ERROR: GLFW failed to Initialize" << '\n';
       return -1;
    }
 
@@ -23,7 +23,7 @@ int main()
 
    if(Window)
    {
-        std::cout << "Window Created successfully" << std::endl;
+        std::cout << "Window Created successfully" << '\n';
         do
         {
             glfwSwapBuffers(Window);
