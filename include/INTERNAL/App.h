@@ -142,8 +142,8 @@ public:
     virtual void init()
     {
         info.title = "Opengl Playground";
-        info.windowWidth = 1600;
-        info.windowHeight = 1200;
+        info.windowWidth = 800;
+        info.windowHeight = 600;
 
         info.majorVersion = 4;
         info.minorVersion = 5;

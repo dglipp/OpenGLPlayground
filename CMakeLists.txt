@@ -16,6 +16,10 @@ link_directories(${CMAKE_SOURCE_DIR}/lib/glfw-3.3.4/lib)
 include_directories(${CMAKE_SOURCE_DIR}/lib/glew-2.1.0/include)
 link_directories(${CMAKE_SOURCE_DIR}/lib/glew-2.1.0/lib)
 
+# targeting SOIL2
+include_directories(${CMAKE_SOURCE_DIR}/lib/SOIL2/include)
+link_directories(${CMAKE_SOURCE_DIR}/lib/SOIL2/lib)
+
 file(GLOB SOURCES "source/*.cpp")
 file(GLOB WINDOWTEST "test/WindowTest.cpp")
 file(GLOB CLEARCOLOR "test/ClearColor.cpp")
@@ -31,8 +35,6 @@ target_link_libraries(windowtest OpenGL::GL glfw3 GLEW dl X11 pthread)
 add_executable(clearcolor ${SOURCES} ${CLEARCOLOR})
 target_link_libraries(clearcolor OpenGL::GL glfw3 GLEW dl X11 pthread)
 
-add_executable(fragment ${SOURCES} ${FRAGMENT})
-target_link_libraries(fragment OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(triangle ${SOURCES} ${TRIANGLE})
 target_link_libraries(triangle OpenGL::GL glfw3 GLEW dl X11 pthread)
@@ -45,6 +47,9 @@ target_link_libraries(dataToGPU OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(MESHLOAD ${SOURCES} ${MESHLOAD})
 target_link_libraries(MESHLOAD OpenGL::GL glfw3 GLEW dl X11 pthread)
+
+add_executable(fragment ${SOURCES} ${FRAGMENT})
+target_link_libraries(fragment OpenGL::GL glfw3 GLEW dl X11 pthread soil2)
 
 set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU MESHLOAD
     PROPERTIES

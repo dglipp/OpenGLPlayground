@@ -36,8 +36,8 @@ class Fragment : public App
 
             std::vector<ShaderInfo> shaders =
             {
-                {GL_VERTEX_SHADER, "/home/dglipp/Projects/OpenGLPlayground/res/shaders/triangles.vert.glsl"}
-                //{GL_FRAGMENT_SHADER, "/home/dglipp/Projects/OpenGLPlayground/res/shaders/triangles.frag.glsl"},
+                {GL_VERTEX_SHADER, "/home/dlippoli/Projects/OpenGLPlayground/res/shaders/triangles.vert.glsl"},
+                {GL_FRAGMENT_SHADER, "/home/dlippoli/Projects/OpenGLPlayground/res/shaders/triangles.frag.glsl"}
             };
 
             GlslLoader loader(shaders);
