@@ -5,30 +5,55 @@
 #include <sstream>
 #include <string>
 
-ShaderLoader::ShaderLoader()
+ShaderProgram::ShaderProgram()
 {
 }
 
-ShaderLoader::ShaderLoader(ShaderInfo shader)
-    : m_Shaders{shader}
+ShaderProgram::ShaderProgram(ShaderInfo shader)
+    : m_ShaderInfos {shader}
 {
 }
 
-ShaderLoader::ShaderLoader(std::vector<ShaderInfo> shaders)
-    : m_Shaders(shaders)
+ShaderProgram::ShaderProgram(std::vector<ShaderInfo> shaderInfos)
+    : m_ShaderInfos(shaderInfos)
 {
 }
 
-ShaderLoader::~ShaderLoader()
+ShaderProgram::~ShaderProgram()
 {
 }
 
-void ShaderLoader::addShader(ShaderInfo shader)
+void ShaderProgram::printShaderLog(GLuint shaderPointer)
 {
-    m_Shaders.push_back(shader);
+    GLsizei len;
+    GLchar message[1024];
+    glGetShaderInfoLog(shaderPointer, 1024, &len, message);
+    if (len) std::cout << "[GLSL COMPILATION ERROR]: " << message << std::endl;
 }
 
-std::string ShaderLoader::getSource(const ShaderInfo & shader) const
+void ShaderProgram::printProgramLog()
+{
+    GLsizei len;
+    GLchar message[1024];
+    glGetProgramInfoLog(m_Program, 1024, &len, message);
+    if (len) std::cout << "[GLSL LINK ERROR]: " << message << std::endl;
+}
+
+bool ShaderProgram::checkOpenGLError()
+{
+    bool errorFound = false;
+    int glError = glGetError();
+
+    while(glError != GL_NO_ERROR)
+    {
+        std::cout << "[GL ERROR]: " << glError << '\n';
+        errorFound = true;
+        glError = glGetError();
+    }
+    return errorFound;
+}
+
+std::string ShaderProgram::readSource(const ShaderInfo & shader) const
 {
     std::ifstream t(shader.sourcePath);
     std::stringstream buffer;
@@ -37,60 +62,28 @@ std::string ShaderLoader::getSource(const ShaderInfo & shader) const
     return shaderSource;
 }
 
-std::vector<std::string> ShaderLoader::getSources(const std::vector<ShaderInfo> & shaders) const
+GLuint ShaderProgram::createProgram()
 {
-    std::vector<std::string> shaderSources;
-    for(const auto shader : shaders)
-        shaderSources.push_back(ShaderLoader::getSource(shader));
-    return shaderSources;
-}
+    m_Program = glCreateProgram();
 
-GlslLoader::GlslLoader()
-    : ShaderLoader()
-{
-}
-
-GlslLoader::GlslLoader(ShaderInfo shader)
-    : ShaderLoader(shader)
-{
-}
-
-GlslLoader::GlslLoader(std::vector<ShaderInfo> shaders)
-    : ShaderLoader(shaders)
-{
-}
-
-GlslLoader::~GlslLoader()
-{
-}
-
-GLuint GlslLoader::getProgram() const
-{
-    GLuint program = glCreateProgram();
-    GLsizei len;
-    GLchar message[1024];
     std::vector<std::string> sources;
-    for(const auto s : m_Shaders)
+    for(const auto s : m_ShaderInfos)
     {
-        GLuint shaderName = glCreateShader(s.shaderType);
-        sources.push_back(getSource(s));
+        sources.push_back(readSource(s));
+
+        GLuint shaderPointer = glCreateShader(s.shaderType);
         const GLchar * src = sources[sources.size()-1].c_str();
-        glShaderSource(shaderName, 1, &src, nullptr);
-        glCompileShader(shaderName);
+        glShaderSource(shaderPointer, 1, &src, nullptr);
+        glCompileShader(shaderPointer);
+        checkOpenGLError();
+        printShaderLog(shaderPointer);
 
-
-        GLsizei len;
-        GLchar message[1024];
-        glGetShaderInfoLog(shaderName, 1024, &len, message);
-        if (len) std::cout << message << std::endl;
-        
-        glAttachShader(program, shaderName);
-        glDeleteShader(shaderName);
+        glAttachShader(m_Program, shaderPointer);
+        glDeleteShader(shaderPointer);
     }
 
-    glLinkProgram(program);
-    glGetProgramInfoLog(program, 1024, &len, message);
-    if (len) std::cout << message << std::endl;
+    glLinkProgram(m_Program);
+    printProgramLog();
 
-    return program;
+    return m_Program;
 }

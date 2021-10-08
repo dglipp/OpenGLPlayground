@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 #include <GL/glew.h>
 
@@ -9,51 +10,47 @@
 struct ShaderInfo
 {
     GLuint shaderType;
-    std::string sourcePath; 
+    std::string sourcePath;
 };
 
-class ShaderLoader
+class ShaderProgram
 {
-    protected:
-        std::vector<ShaderInfo> m_Shaders;
+    private:
+        std::vector<ShaderInfo> m_ShaderInfos;
+        GLuint m_Program;
 
-    protected:
+    private:
         /**
-         * @brief Get source string from ShaderInfo object (uses only sourcePath)
+         * @brief Get source string from ShaderInfo object (uses only sourcePath).
          * 
-         * @returns Return a string representing source 
+         * @returns Return a string representing source.
          */
-        std::string getSource(const ShaderInfo & shader) const;
+        std::string readSource(const ShaderInfo& shader) const;
 
         /**
-         * @brief Apply getSource for all ShaderInfo objects in vector
-         * @returns A vector of string representing sources
+         * Check compilation errors in given shader.
          */
-        std::vector<std::string> getSources(const std::vector<ShaderInfo> & shaders) const;
+        void printShaderLog(GLuint shaderPointer);
+        
+        /**
+         * Check compilation errors in given program.
+         */
+        void printProgramLog();
 
         /**
-         * @brief Compile given shader. To be redefined in specialized subclasses
-         * 
-         * @param shader The shader to be compiled
+         * Check opengl errors.
          */
+        bool checkOpenGLError();
+
 
     public:
-        ShaderLoader();
-        ShaderLoader(ShaderInfo shader);
-        ShaderLoader(std::vector<ShaderInfo> shaders);
-        ~ShaderLoader();
+        ShaderProgram();
+        ShaderProgram(ShaderInfo shader);
+        ShaderProgram(std::vector<ShaderInfo> shaders);
+        ~ShaderProgram();
 
-        void addShader(ShaderInfo shader);
-        virtual GLuint getProgram() const = 0;
-};
-
-class GlslLoader : public ShaderLoader
-{
-    public:
-        GlslLoader();
-        GlslLoader(ShaderInfo shader);
-        GlslLoader(std::vector<ShaderInfo> shaders);
-        ~GlslLoader();
-
-        GLuint getProgram() const;
+        /**
+         * @brief Compile, link shaders in program and returns pointer to program
+         */
+        GLuint createProgram();
 };

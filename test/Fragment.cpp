@@ -40,10 +40,9 @@ class Fragment : public App
                 {GL_FRAGMENT_SHADER, "/home/dlippoli/Projects/OpenGLPlayground/res/shaders/triangles.frag.glsl"}
             };
 
-            GlslLoader loader(shaders);
-            GLuint program = loader.getProgram();
+            ShaderProgram program {shaders};
 
-            glUseProgram(program);
+            glUseProgram(program.createProgram());
 
             glGenVertexArrays(1, &m_VAO);
             glBindVertexArray(m_VAO);
