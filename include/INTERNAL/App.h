@@ -58,31 +58,20 @@ public:
         {
             glfwWindowHint(GLFW_CONTEXT_ROBUSTNESS, GLFW_LOSE_CONTEXT_ON_RESET);
         }
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        // glfwWindowHint(GLFW_SAMPLES, info.samples);
-        // glfwWindowHint(GLFW_STEREO, info.flags.stereo ? GL_TRUE : GL_FALSE);
-        //        if (info.flags.fullscreen)
-        //        {
-        //            if (info.windowWidth == 0 || info.windowHeight == 0)
-        //            {
-        //                GLFWvidmode mode;
-        //                glfwGetDesktopMode(&mode);
-        //                info.windowWidth = mode.Width;
-        //                info.windowHeight = mode.Height;
-        //            }
-        //
-        //            glfwOpenWindow(info.windowWidth, info.windowHeight, 8, 8, 8, 0, 32, 0, GLFW_FULLSCREEN);
-        //            glfwSwapInterval((int)info.flags.vsync);
-        //        }
-        //        else
+
+        if (info.flags.fullscreen)
         {
-            window = glfwCreateWindow(info.windowWidth, info.windowHeight, info.title.c_str(), info.flags.fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
-            if (!window)
-            {
-                std::cerr << "Failed to create a new window" << '\n';
-                return;
-            }
+            const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            info.windowWidth = mode->width;
+            info.windowHeight = mode->height;
+            glfwSwapInterval((int)info.flags.vsync);
+        std::cout << info.windowWidth << "   " << info.windowHeight;
+        }
+        window = glfwCreateWindow(info.windowWidth, info.windowHeight, info.title.c_str(), nullptr, nullptr);
+        if (!window)
+        {
+            std::cerr << "Failed to create a new window" << '\n';
+            return;
         }
 
         glfwMakeContextCurrent(window);
@@ -148,6 +137,7 @@ public:
         info.majorVersion = 4;
         info.minorVersion = 5;
         info.samples = 0;
+        info.flags.fullscreen = 0;
         info.flags.all = 0;
         info.flags.cursor = 1;
         info.flags.debug = 1;

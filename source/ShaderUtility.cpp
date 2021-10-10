@@ -56,6 +56,8 @@ bool ShaderProgram::checkOpenGLError()
 std::string ShaderProgram::readSource(const ShaderInfo & shader) const
 {
     std::ifstream t(shader.sourcePath);
+    if(t.fail())
+        std::cout << "[IO ERROR]: File not found.\n";
     std::stringstream buffer;
     buffer << t.rdbuf();
     std::string shaderSource = buffer.str();
