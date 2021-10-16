@@ -111,21 +111,24 @@ class Fragment : public App
             GLint projMatLoc = glGetUniformLocation(m_Program, "projMat");
 
             float aspect = (float) info.windowWidth / (float) info.windowHeight;
-            for(int i = 0; i < 200; i++)
+            time = time * 60;
+            for(int i = 0; i < 10000; i++)
             {
-                time = time + i * 100;
+                time = time + 0.01;
                 glm::mat4 projMat = glm::perspective(1.0472f, aspect, 0.1f, 1000.0f);    // fov to 60 degrees
 
-                glm::mat4 viewMat = glm::translate(glm::mat4(1.0f), glm::vec3(-m_Camera.x, -m_Camera.y, -m_Camera.z));
+                glm::mat4 viewMat = glm::lookAt(glm::vec3(2,0,2),
+                                                glm::vec3(0,0,0),
+                                                glm::vec3(0,1,0));
                 
-                glm::mat4 translateMat = glm::translate(glm::mat4(1.0f), glm::vec3(sin(0.35f * time * 10),
-                                                                                cos(0.52f * time * 10),
-                                                                                sin(0.70f * time * 10)));
-                glm::mat4 rotMat = glm::rotate(glm::mat4(1.0f), 1.75f * (float) time, glm::vec3(0.0f, 1.0f, 0.0f));
-                rotMat = glm::rotate(rotMat, 1.75f * (float) time, glm::vec3(1.0f, 0.0f, 0.0f));
-                rotMat = glm::rotate(rotMat, 1.75f * (float) time, glm::vec3(0.0f, 0.0f, 1.0f));
+                glm::mat4 translateMat = glm::translate(glm::mat4(1.0f), glm::vec3(sin(0.035f * time),
+                                                                                cos(0.052f * time),
+                                                                                sin(0.070f * time)));
+                glm::mat4 rotMat = glm::rotate(glm::mat4(1.0f), 0.075f * (float) time, glm::vec3(0.0f, 1.0f, 0.0f));
+                rotMat = glm::rotate(rotMat, 0.075f * (float) time, glm::vec3(1.0f, 0.0f, 0.0f));
+                rotMat = glm::rotate(rotMat, 0.075f * (float) time, glm::vec3(0.0f, 0.0f, 1.0f));
 
-                glm::mat4 modelMat = rotMat * translateMat * glm::scale(glm::mat4(1.0f), glm::vec3(0.001f, 0.001f, 0.001f));
+                glm::mat4 modelMat = rotMat * translateMat * glm::scale(glm::mat4(1.0f), glm::vec3(0.0005f, 0.0005f, 0.0005f));
 
                 glm::mat4 mvMat = viewMat * modelMat;
 
