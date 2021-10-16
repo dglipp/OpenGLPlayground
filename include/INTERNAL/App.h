@@ -65,7 +65,6 @@ public:
             info.windowWidth = mode->width;
             info.windowHeight = mode->height;
             glfwSwapInterval((int)info.flags.vsync);
-        std::cout << info.windowWidth << "   " << info.windowHeight;
         }
         window = glfwCreateWindow(info.windowWidth, info.windowHeight, info.title.c_str(), nullptr, nullptr);
         if (!window)
