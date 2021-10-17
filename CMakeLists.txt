@@ -32,6 +32,7 @@ file(GLOB MESHLOAD "test/MeshLoading.cpp")
 file(GLOB INSTANCING "test/Instancing.cpp")
 file(GLOB MULTIPLEOBJ "test/MultipleObjects.cpp")
 file(GLOB ORBIT "test/Orbit.cpp")
+file(GLOB TEXTURE "test/Texture.cpp")
 
 add_executable(windowtest ${SOURCES} ${WINDOWTEST})
 target_link_libraries(windowtest OpenGL::GL glfw3 GLEW dl X11 pthread)
@@ -64,7 +65,10 @@ target_link_libraries(MultipleObj OpenGL::GL glfw3 GLEW dl X11 pthread soil2)
 add_executable(Orbit ${SOURCES} ${ORBIT})
 target_link_libraries(Orbit OpenGL::GL glfw3 GLEW dl X11 pthread soil2)
 
-set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU MESHLOAD Instancing MultipleObj Orbit
+add_executable(Texture ${SOURCES} ${TEXTURE})
+target_link_libraries(Texture OpenGL::GL glfw3 GLEW dl X11 pthread soil2)
+
+set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU MESHLOAD Instancing MultipleObj Orbit Texture
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
