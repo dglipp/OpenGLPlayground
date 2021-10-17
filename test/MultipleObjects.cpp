@@ -32,16 +32,16 @@ union Position
     double v[3];
 };
 
-class Instancing : public App
+class MultipleObjects : public App
 {
     private:
         GLint m_Program;
         GLuint m_VAO;
-        GLuint m_Buffer;
+        GLuint m_Buffer[2];
 
         glm::vec3 m_Camera;
-        Position m_ModelPosition;
-        glm::vec3 m_RotParams;
+        Position m_ModelPosition[2];
+
 
     public:
         void init()
@@ -62,7 +62,7 @@ class Instancing : public App
 
         void startup()
         {
-            const GLfloat vertices[] = 
+            const GLfloat cube[] = 
             {
                 -1, 1, -1, -1, -1, -1, 1, -1, -1,
                 1, -1, -1, 1, 1, -1, -1, 1, -1,
@@ -78,9 +78,19 @@ class Instancing : public App
                 1, 1, 1, -1, 1, 1, -1, 1, -1
             };
 
+            const GLfloat pyramid[] =
+                {
+                    -1, -1, 1, 1, -1, 1, 0, 1, 0,
+                    1, -1, 1, 1, -1, -1, 0, 1, 0,
+                    1, -1, -1, -1, -1, -1, 0, 1, 0,
+                    -1, -1, -1, -1, -1, 1, 0, 1, 0,
+                    -1, -1, -1, 1, -1, 1, -1, -1, 1,
+                    1, -1, 1, -1, -1, -1, 1, -1, -1
+                };
+
             std::vector<ShaderInfo> shaders =
             {
-                {GL_VERTEX_SHADER, "../../res/shaders/instancing.vert.glsl"},
+                {GL_VERTEX_SHADER, "../../res/shaders/triangles.vert.glsl"},
                 {GL_FRAGMENT_SHADER, "../../res/shaders/triangles.frag.glsl"}
             };
 
@@ -91,16 +101,18 @@ class Instancing : public App
             glGenVertexArrays(1, &m_VAO);
             glBindVertexArray(m_VAO);
 
-            glGenBuffers(1, &m_Buffer);
-            glBindBuffer(GL_ARRAY_BUFFER, m_Buffer);
+            glGenBuffers(2, &m_Buffer[0]);
 
-            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+            glBindBuffer(GL_ARRAY_BUFFER, m_Buffer[0]);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
+
+            glBindBuffer(GL_ARRAY_BUFFER, m_Buffer[1]);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(pyramid), pyramid, GL_STATIC_DRAW);
+
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
             glEnableVertexAttribArray(0);
 
-            m_Camera = glm::vec3(0, 10, -2000);
-            m_ModelPosition = Position(0, 0, 0);
-            m_RotParams = glm::vec3(400000, 400000, 400000);
+            m_Camera = glm::vec3(0, 0, 3);
         }
 
         void render(double time)
@@ -108,28 +120,48 @@ class Instancing : public App
             glClear(GL_DEPTH_BUFFER_BIT);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            m_RotParams.z += 10;
-            GLint viewMatLoc = glGetUniformLocation(m_Program, "viewMatrix");
-            GLint projMatLoc = glGetUniformLocation(m_Program, "projMatrix");
-            GLint tfLoc = glGetUniformLocation(m_Program, "tf");
-            GLint rotParamsLoc = glGetUniformLocation(m_Program, "rotParams");
+            GLint mvMatLoc = glGetUniformLocation(m_Program, "mvMat");
+            GLint projMatLoc = glGetUniformLocation(m_Program, "projMat");
 
             float aspect = (float) info.windowWidth / (float) info.windowHeight;
-            glm::mat4 projMat = glm::perspective(1.0472f, aspect, 0.1f, 1000000.0f);    // fov to 60 degrees
+            glm::mat4 projMat = glm::perspective(1.0472f, aspect, 0.1f, 1000.0f);    // fov to 60 degrees
 
             glm::mat4 viewMat = glm::lookAt(m_Camera,
-                                            glm::vec3(0, 0, 0),
-                                            glm::vec3(0, 1, 0));
+                                            glm::vec3(0,0,0),
+                                            glm::vec3(0,1,0));
             
-            glUniformMatrix4fv(viewMatLoc, 1, GL_FALSE, glm::value_ptr(viewMat));
+            // CUBE
+            glm::mat4 modelMat = glm::scale(glm::mat4(1.0f), glm::vec3(0.1, 0.1f, 0.1f));
+
+            glm::mat4 mvMat = viewMat * modelMat;
+
+            glUniformMatrix4fv(mvMatLoc, 1, GL_FALSE, glm::value_ptr(mvMat));
             glUniformMatrix4fv(projMatLoc, 1, GL_FALSE, glm::value_ptr(projMat));
-            glUniform1f(tfLoc, (float)time);
-            glUniform3fv(rotParamsLoc, 1, glm::value_ptr(m_RotParams));
+
+            glBindBuffer(GL_ARRAY_BUFFER, m_Buffer[0]);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+            glEnableVertexAttribArray(0);
+            
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LEQUAL);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+
+            // PYRAMID
+            modelMat = glm::scale(glm::mat4(1.0f), glm::vec3(0.1, 0.1, 0.1));
+            modelMat = glm::translate(modelMat, glm::vec3(3, 3, 0.1));
+
+            mvMat = viewMat * modelMat;
+
+            glUniformMatrix4fv(mvMatLoc, 1, GL_FALSE, glm::value_ptr(mvMat));
+            glUniformMatrix4fv(projMatLoc, 1, GL_FALSE, glm::value_ptr(projMat));
+
+            glBindBuffer(GL_ARRAY_BUFFER, m_Buffer[1]);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+            glEnableVertexAttribArray(0);
 
             glEnable(GL_DEPTH_TEST);
             glDepthFunc(GL_LEQUAL);
-
-            glDrawArraysInstanced(GL_TRIANGLES, 0, 36, 1e6);
+            glDrawArrays(GL_TRIANGLES, 0, 18);
         }
 
         void shutdown()
@@ -138,57 +170,33 @@ class Instancing : public App
             glDeleteProgram(m_Program);
         }
 
-        void onKey(int key, int action)
+                void onKey(int key, int action)
         {
             if(action == 1 || action == 2)
             switch (key)
             {
-            case GLFW_KEY_1:
-                m_RotParams.x += 100;
-                break;
-
-            case GLFW_KEY_2:
-                m_RotParams.x -= 100;
-                break;
-
-            case GLFW_KEY_3:
-                m_RotParams.y += 100;
-                break;
-
-            case GLFW_KEY_4:
-                m_RotParams.y -= 100;
-                break;
-            
-            case GLFW_KEY_5:
-                m_RotParams.z += 100;
-                break;
-
-            case GLFW_KEY_6:
-                m_RotParams.z -= 100;
-                break;
-
             case GLFW_KEY_W:
-                m_Camera.z -= 100;
+                m_Camera.z -= 1;
                 break;
             
             case GLFW_KEY_S:
-                m_Camera.z += 100;
+                m_Camera.z += 1;
                 break;
             
             case GLFW_KEY_A:
-                m_Camera.x -= 100;
+                m_Camera.x -= 1;
                 break;
 
             case GLFW_KEY_D:
-                m_Camera.x += 100;
+                m_Camera.x += 1;
                 break;
 
             case GLFW_KEY_Q:
-                m_Camera.y += 100;
+                m_Camera.y += 1;
                 break;
 
             case GLFW_KEY_E:
-                m_Camera.y -= 100;
+                m_Camera.y -= 1;
                 break;
 
             default:
@@ -197,4 +205,4 @@ class Instancing : public App
         }
 };
 
-MAIN(Instancing);
+MAIN(MultipleObjects);

@@ -30,6 +30,7 @@ file(GLOB FRAGMENTINTERPOL "test/FragmentInterpolation.cpp")
 file(GLOB DATATOGPU "test/DataToGPU.cpp")
 file(GLOB MESHLOAD "test/MeshLoading.cpp")
 file(GLOB INSTANCING "test/Instancing.cpp")
+file(GLOB MULTIPLEOBJ "test/MultipleObjects.cpp")
 
 add_executable(windowtest ${SOURCES} ${WINDOWTEST})
 target_link_libraries(windowtest OpenGL::GL glfw3 GLEW dl X11 pthread)
@@ -56,7 +57,10 @@ target_link_libraries(fragment OpenGL::GL glfw3 GLEW dl X11 pthread soil2)
 add_executable(Instancing ${SOURCES} ${INSTANCING})
 target_link_libraries(Instancing OpenGL::GL glfw3 GLEW dl X11 pthread soil2)
 
-set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU MESHLOAD Instancing
+add_executable(MultipleObj ${SOURCES} ${MULTIPLEOBJ})
+target_link_libraries(MultipleObj OpenGL::GL glfw3 GLEW dl X11 pthread soil2)
+
+set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU MESHLOAD Instancing MultipleObj
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
