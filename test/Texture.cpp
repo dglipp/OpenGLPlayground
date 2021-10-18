@@ -20,7 +20,7 @@ private:
     Texture m_Texture;
     GLint m_Program;
     GLuint m_VAO;
-    GLuint m_Buffer;
+    GLuint m_Buffer[2];
 
     glm::vec3 m_Camera;
     glm::mat4 m_ProjMatrix;
@@ -46,8 +46,8 @@ public:
 
     void startup()
     {
-        m_Texture = Texture("../../res/textures/buba.png");
-        std::cout << m_Texture.getTextureID() << '\n';
+        m_Texture = Texture("../../res/textures/fabric.jpg");
+
         const GLfloat pyramid[] =
             {
                 -1, -1, 1, 1, -1, 1, 0, 1, 0,
@@ -57,10 +57,17 @@ public:
                 -1, -1, -1, 1, -1, 1, -1, -1, 1,
                 1, -1, 1, -1, -1, -1, 1, -1, -1};
 
+        const GLfloat pyrTextureCoords[] =
+            {
+                0, 0, 1, 0, 0.5, 1, 0, 0, 1, 0, 0.5, 1,
+                0, 0, 1, 0, 0.5, 1, 0, 0, 1, 0, 0.5, 1,
+                0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0,
+            };
+
         std::vector<ShaderInfo> shaders =
             {
-                {GL_VERTEX_SHADER, "../../res/shaders/triangles.vert.glsl"},
-                {GL_FRAGMENT_SHADER, "../../res/shaders/triangles.frag.glsl"}};
+                {GL_VERTEX_SHADER, "../../res/shaders/texture.vert.glsl"},
+                {GL_FRAGMENT_SHADER, "../../res/shaders/texture.frag.glsl"}};
 
         ShaderProgram program{shaders};
         m_Program = program.createProgram();
@@ -69,13 +76,20 @@ public:
         glGenVertexArrays(1, &m_VAO);
         glBindVertexArray(m_VAO);
 
-        glGenBuffers(1, &m_Buffer);
+        glGenBuffers(2, &m_Buffer[0]);
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_Buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m_Buffer[0]);
         glBufferData(GL_ARRAY_BUFFER, sizeof(pyramid), pyramid, GL_STATIC_DRAW);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
         glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_Buffer[1]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(pyrTextureCoords), pyrTextureCoords, GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+        glEnableVertexAttribArray(1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_Texture.getTextureID());
 
         m_Camera = glm::vec3(0, 10, 30);
 
@@ -110,40 +124,9 @@ public:
         mvStack.top() *= glm::rotate(glm::mat4(1.0f), (float)time, glm::vec3(1.0f, 0.0f, 0.0f));
 
         glUniformMatrix4fv(mvMatLoc, 1, GL_FALSE, glm::value_ptr(mvStack.top()));
-        glBindBuffer(GL_ARRAY_BUFFER, m_Buffer);
 
         glDrawArrays(GL_TRIANGLES, 0, 18);
         mvStack.pop();
-
-        // EARTH
-        mvStack.push(mvStack.top());
-        mvStack.top() *= glm::translate(glm::mat4(1.0f), glm::vec3((float)sin(time) * 4.0f, 0.0f, (float)cos(time) * 4.0f));
-
-        mvStack.push(mvStack.top());
-        mvStack.top() *= glm::rotate(glm::mat4(1.0f), (float)time, glm::vec3(0.0f, 1.0f, 0.0f));
-
-        mvStack.push(mvStack.top());
-        mvStack.top() *= glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
-
-        glUniformMatrix4fv(mvMatLoc, 1, GL_FALSE, glm::value_ptr(mvStack.top()));
-        glBindBuffer(GL_ARRAY_BUFFER, m_Buffer);
-        glDrawArrays(GL_TRIANGLES, 0, 18);
-        mvStack.pop();
-        mvStack.pop();
-
-        // MOON
-        mvStack.push(mvStack.top());
-        mvStack.top() *= glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, (float)sin(time) * 2.0f, (float)cos(time) * 2.0f));
-
-        mvStack.push(mvStack.top());
-        mvStack.top() *= glm::rotate(glm::mat4(1.0f), (float)time, glm::vec3(0.0f, 1.0f, 0.0f));
-
-        mvStack.push(mvStack.top());
-        mvStack.top() *= glm::scale(glm::mat4(1.0f), glm::vec3(0.25f, 0.25f, 0.25f));
-
-        glUniformMatrix4fv(mvMatLoc, 1, GL_FALSE, glm::value_ptr(mvStack.top()));
-        glBindBuffer(GL_ARRAY_BUFFER, m_Buffer);
-        glDrawArrays(GL_TRIANGLES, 0, 18);
 
         while (!mvStack.empty())
         {
