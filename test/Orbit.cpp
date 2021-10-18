@@ -12,6 +12,7 @@
 
 #include <INTERNAL/App.h>
 #include <INTERNAL/ShaderUtility.h>
+#include <INTERNAL/Geometry.h>
 
 class Orbit : public App
 {
@@ -24,6 +25,8 @@ class Orbit : public App
         glm::mat4 m_ProjMatrix;
 
         std::stack<glm::mat4> mvStack;
+
+        geo::Sphere m_Planet;
 
     public:
         void init()
@@ -44,6 +47,8 @@ class Orbit : public App
 
         void startup()
         {
+            m_Planet = geo::Sphere();
+
             const GLfloat pyramid[] =
                 {
                     -1, -1, 1, 1, -1, 1, 0, 1, 0,
