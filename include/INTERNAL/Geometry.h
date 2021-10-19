@@ -9,7 +9,7 @@ namespace geo
         protected:
             std::vector<int> m_Indices;
             std::vector<glm::vec3> m_Vertices;
-            std::vector<glm::vec3> m_TexCoords;
+            std::vector<glm::vec2> m_TexCoords;
             std::vector<glm::vec3> m_Normals;
 
         protected:
@@ -23,7 +23,7 @@ namespace geo
             std::vector<int> getIndices();
             std::vector<glm::vec3> getVertices();
             std::vector<glm::vec3> getNormals();
-            std::vector<glm::vec3> getTexCoords();
+            std::vector<glm::vec2> getTexCoords();
     };
 
     class Sphere : public Surface
