@@ -32,12 +32,26 @@ namespace geo
             float m_Precision;
 
         private:
-            float degreesToRad(float degrees);
-            float radToDegrees(float rads);
             void init();
 
         public:
             Sphere();
             Sphere(float precision);
+    };
+
+    class Torus : public Surface
+    {
+        private:
+            float m_Precision;
+            float m_InnerRadius;
+            float m_OuterRadius;
+
+        private:
+            void init();
+
+        public:
+            Torus();
+            Torus(float innerRadius, float outerRadius);
+            Torus(float innerRadius, float outerRadius, float precision);
     };
 }

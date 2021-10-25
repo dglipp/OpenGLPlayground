@@ -1,5 +1,8 @@
 #include <INTERNAL/Geometry.h>
 
+#include <VENDOR/GLM/glm.hpp>
+#include <VENDOR/GLM/gtc/matrix_transform.hpp>
+
 #include <cmath>
 #include <iostream>
 
@@ -49,16 +52,6 @@ namespace geo
         : m_Precision(precision)
     {
         init();
-    }
-
-    float Sphere::degreesToRad(float degrees)
-    {
-        return degrees * 2.0f * M_PI / 360.0f;
-    }
-
-    float Sphere::radToDegrees(float rads)
-    {
-        return rads * 360.0f / 2.0f / M_PI;
     }
 
     void Sphere::init()
@@ -115,6 +108,86 @@ namespace geo
                     m_Indices.push_back(k2);
                     m_Indices.push_back(k2 + 1);
                 }
+            }
+        }
+    }
+
+    Torus::Torus()
+    {
+    }
+    
+    Torus::Torus(float innerRadius, float outerRadius)
+        : m_Precision(48)
+        , m_InnerRadius(innerRadius)
+        , m_OuterRadius(outerRadius)
+    {
+    }
+
+    Torus::Torus(float innerRadius, float outerRadius, float precision)
+        : m_Precision(precision)
+        , m_InnerRadius(innerRadius)
+        , m_OuterRadius(outerRadius)
+    {
+    }
+
+    void Torus::init()
+    {
+        int nVertices = (m_Precision + 1) * (m_Precision + 1);
+        int nIndices = m_Precision * m_Precision * 6;
+        m_Vertices.resize(nVertices);
+        m_TexCoords.resize(nVertices);
+        m_Normals.resize(nVertices);
+        m_Indices.resize(nIndices);
+
+        // used to calculate normal vector
+        std::vector<glm::vec3> tans;
+        std::vector<glm::vec3> bitans;
+
+
+        // build first vertex ring
+        for (int i = 0; i <= m_Precision; ++i)
+        {
+            float amount = i * 2.0f * M_PI / m_Precision;
+            glm::mat4 rotMat = glm::rotate(glm::mat4(1.0f), amount, glm::vec3(0.0f, 0.0f, 1.0f));
+            glm::vec3 initPos(rotMat * glm::vec4(0.0f, m_OuterRadius, 0.0f, 1.0f));
+            
+            m_Vertices[i] = glm::vec3(initPos + glm::vec3(m_InnerRadius, 0.0f, 0.0f));
+            m_TexCoords[i] = glm::vec2(0.0f, ((float)i / (float)m_Precision));
+
+            rotMat = glm::rotate(glm::mat4(1.0f), (float) (amount + M_PI_2), glm::vec3(0.0f, 0.0f, 1.0f));
+            bitans[i] = glm::vec3(rotMat * glm::vec4(0.0f, -1.0f, 0.0f, 1.0f));
+            tans[i] = glm::vec3(0.0f, 0.0f, -1.0f);
+            m_Normals[i] = glm::cross(bitans[i], tans[i]);
+        }
+
+        // rotate vertex ring around Y
+        for (int ring = 1; ring <= m_Precision; ++ring)
+        {
+            for (int v = 0; v <= m_Precision; ++v)
+            {
+                float amount = (float)ring * 2 * M_PI / m_Precision;
+                glm::mat4 rotMat = glm::rotate(glm::mat4(1.0f), amount, glm::vec3(0.0f, 1.0f, 0.0f));
+                m_Vertices[ring * (m_Precision + 1) + v] = glm::vec3(1, 1, 1); //glm::vec3(rotMat * glm::vec4(m_Vertices[v], 1.0f);
+                m_TexCoords[ring * (m_Precision + 1) + v] = glm::vec2((float) ring * 2.0f / (float) m_Precision, m_TexCoords[v].t);
+
+                rotMat = glm::rotate(glm::mat4(1.0f), amount, glm::vec3(0.0f, 1.0f, 0.0f));
+                bitans[ring * (m_Precision + 1) + v] = glm::vec3(rotMat * glm::vec4(bitans[v], 1.0f));
+                tans[ring * (m_Precision + 1) + v] = glm::vec3(rotMat * glm::vec4(tans[v], 1.0f));
+
+                m_Normals[ring * (m_Precision + 1) + v] = glm::vec3(rotMat * glm::vec4(m_Normals[v], 1.0f));
+            }
+        }
+
+        for (int ring = 0; ring < m_Precision; ++ring)
+        {
+            for (int v = 0; v < m_Precision; ++v)
+            {
+                m_Indices[((ring * m_Precision + v) * 2) * 3 + 0] = ring * (m_Precision + 1) + v;
+                m_Indices[((ring * m_Precision + v) * 2) * 3 + 1] = (ring + 1) * (m_Precision + 1) + v;
+                m_Indices[((ring * m_Precision + v) * 2) * 3 + 2] = ring * (m_Precision + 1) + v + 1;
+                m_Indices[((ring * m_Precision + v) * 2 + 1) * 3 + 0] = ring * (m_Precision + 1) + v + 1;
+                m_Indices[((ring * m_Precision + v) * 2 + 1) * 3 + 1] = (ring + 1) * (m_Precision + 1) + v;
+                m_Indices[((ring * m_Precision + v) * 2 + 1) * 3 + 2] = (ring + 1) * (m_Precision + 1) + v + 1;
             }
         }
     }
