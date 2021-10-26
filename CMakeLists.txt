@@ -28,12 +28,11 @@ file(GLOB FRAGMENT "test/Fragment.cpp")
 file(GLOB TRIANGLE "test/Triangle.cpp")
 file(GLOB FRAGMENTINTERPOL "test/FragmentInterpolation.cpp")
 file(GLOB DATATOGPU "test/DataToGPU.cpp")
-file(GLOB MESHLOAD "test/MeshLoading.cpp")
 file(GLOB INSTANCING "test/Instancing.cpp")
 file(GLOB MULTIPLEOBJ "test/MultipleObjects.cpp")
 file(GLOB ORBIT "test/Orbit.cpp")
 file(GLOB TEXTURE "test/Texture.cpp")
-file(GLOB IDXTORUS "test/IndexedTorus.cpp")
+file(GLOB IDXTORUS "test/Bubacow.cpp")
 
 add_executable(windowtest ${SOURCES} ${WINDOWTEST})
 target_link_libraries(windowtest soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
@@ -51,9 +50,6 @@ target_link_libraries(fragmentInterpol soil2 OpenGL::GL glfw3 GLEW dl X11 pthrea
 add_executable(dataToGPU ${SOURCES} ${DATATOGPU})
 target_link_libraries(dataToGPU soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
-add_executable(MESHLOAD ${SOURCES} ${MESHLOAD})
-target_link_libraries(MESHLOAD soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
-
 add_executable(fragment ${SOURCES} ${FRAGMENT})
 target_link_libraries(fragment soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
@@ -69,10 +65,10 @@ target_link_libraries(Orbit soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 add_executable(Texture ${SOURCES} ${TEXTURE})
 target_link_libraries(Texture soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
-add_executable(IndexingTorus ${SOURCES} ${IDXTORUS})
-target_link_libraries(IndexingTorus soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
+add_executable(Bubacow ${SOURCES} ${IDXTORUS})
+target_link_libraries(Bubacow soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
-set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU MESHLOAD Instancing MultipleObj Orbit Texture IndexingTorus
+set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU Instancing MultipleObj Orbit Texture Bubacow
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"

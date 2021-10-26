@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 
 #include <VENDOR/GLM/glm.hpp>
@@ -57,5 +59,24 @@ namespace geo
             Torus();
             Torus(float innerRadius, float outerRadius);
             Torus(float innerRadius, float outerRadius, float precision);
+    };
+
+    class Mesh : public Surface
+    {
+        private:
+            void init();
+
+        public:
+            Mesh();
+            Mesh(std::vector<glm::vec3> vertices);
+            Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals);
+            Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec2> textureCoords);
+            Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> textureCoords);
+
+            Mesh(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices);
+            Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<unsigned int> indices);
+            Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec2> textureCoords, std::vector<unsigned int> indices);
+            Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals,
+                 std::vector<glm::vec2> textureCoords, std::vector<unsigned int> indices);
     };
 }

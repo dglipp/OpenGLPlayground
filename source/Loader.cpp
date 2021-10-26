@@ -1,18 +1,20 @@
+#include <INTERNAL/Loader.h>
+
 #include <iostream>
 #include <vector>
 #include <regex>
 
-#include <INTERNAL/Loader.h>
-#include <INTERNAL/Structures.h>
+#include <INTERNAL/Geometry.h>
 
-namespace loaders
+#include <VENDOR/GLM/glm.hpp>
+
+namespace load
 {
-    str::Mesh ObjLoader::loadMesh(std::string name)
+    geo::Mesh ObjLoader::loadMesh(std::string name)
     {
         /*
             Scan each line of file.
-            Find for each line its kind (v, vn, vt, f) and add the appropriate struct
-            Vertex, Normal, TexCoord, Face (See Structures.h for definition)
+            Find for each line its kind (v, vn, vt, f) and add
             to the corresponding Vector.
 
             If face index is relative (-1) transform to absolute. 
@@ -22,10 +24,13 @@ namespace loaders
         std::vector<std::string> line_vec;
         std::string token;
 
-        std::vector<str::Vertex> vertices;
-        std::vector<str::Normal> normals;
-        std::vector<str::TexCoord> texCoords;
-        std::vector<str::Face> faces;
+        std::vector<glm::vec3> vertices;
+        std::vector<glm::vec3> normals;
+        std::vector<glm::vec2> texCoords;
+
+        std::vector<unsigned int> vertIdx;
+        std::vector<unsigned int> normIdx;
+        std::vector<unsigned int> texIdx;
 
         while(m_file)
         {
@@ -41,55 +46,25 @@ namespace loaders
 
             if(line_vec[0] == "v")
             {
-                str::Vertex vert = line_vec.size() == 4 ? str::Vertex(std::stod(line_vec[1]),
-                                                                        std::stod(line_vec[2]),
-                                                                        std::stod(line_vec[3])) :
-                                                            str::Vertex(std::stod(line_vec[1]),
-                                                                        std::stod(line_vec[2]),
-                                                                        std::stod(line_vec[3]),
-                                                                        std::stod(line_vec[4]));
-                vertices.push_back(vert);
+                vertices.push_back(glm::vec3(std::stof(line_vec[1]),
+                                             std::stof(line_vec[2]),
+                                             std::stof(line_vec[3])));
             }
 
             if(line_vec[0] == "vn")
             {
-                str::Normal norm = str::Normal(std::stod(line_vec[1]),
-                                                std::stod(line_vec[2]),
-                                                std::stod(line_vec[3]));
-                normals.push_back(norm);
+                normals.push_back(glm::vec3(std::stof(line_vec[1]),
+                                            std::stof(line_vec[2]),
+                                            std::stof(line_vec[3])));
             }
 
             if(line_vec[0] == "vt")
             {
-                if(line_vec.size() == 4)
-                {
-                    str::TexCoord textCoord = str::TexCoord(std::stod(line_vec[1]),
-                                                        std::stod(line_vec[2]),
-                                                        std::stod(line_vec[3]));
-                    texCoords.push_back(textCoord);
-                }
-
-                if(line_vec.size() == 3)
-                {
-                    str::TexCoord textCoord = str::TexCoord(std::stod(line_vec[1]),
-                                                        std::stod(line_vec[2]));
-                    texCoords.push_back(textCoord);
-                }
-
-                if(line_vec.size() == 2)
-                {
-                    str::TexCoord textCoord = str::TexCoord(std::stod(line_vec[1]));
-                    texCoords.push_back(textCoord);
-                }
+                texCoords.push_back(glm::vec2(std::stof(line_vec[1]), std::stof(line_vec[2])));
             }
 
             if(line_vec[0] == "f")
             {   
-                bool mask[3];
-                std::vector<unsigned int> vertIdx;
-                std::vector<unsigned int> normIdx;
-                std::vector<unsigned int> texIdx;
-
                 line_vec.erase(line_vec.begin());
                 for(auto lv : line_vec)
                 {
@@ -102,19 +77,12 @@ namespace loaders
 
                     if(indices.size() == 1)
                     {
-                        mask[0] = true;
-                        mask[1] = false;
-                        mask[2] = false;
                         int idx = std::stoi(indices[0]);
                         vertIdx.push_back(idx > 0 ? idx - 1 : vertices.size() - idx);
                     }
 
                     if(indices.size() == 2)
                     {
-                        mask[0] = true;
-                        mask[1] = true;
-                        mask[2] = false;
-
                         int idx = std::stoi(indices[0]);
                         vertIdx.push_back(idx > 0 ? idx - 1 : vertices.size() - idx);
 
@@ -124,9 +92,6 @@ namespace loaders
 
                     if(indices.size() == 3)
                     {
-                        mask[0] = true;
-                        mask[1] = false;
-                        mask[2] = true;
                         int idx = std::stoi(indices[0]);
 
                         vertIdx.push_back(idx > 0 ? idx - 1 : vertices.size() - idx);
@@ -136,17 +101,17 @@ namespace loaders
 
                         if(indices[1] != "")
                         {
-                            mask[1] = true;
                             idx = std::stoi(indices[1]);
                             texIdx.push_back(idx > 0 ? idx - 1 : texCoords.size() - idx);
                         }
                     }
                 }
-                faces.push_back(str::Face(mask, vertIdx, texIdx, normIdx));
             }
             line_vec.clear();
         }
-        str::Mesh obj(name, vertices, normals, texCoords, faces);
+
+        std::cout << vertIdx.size() << "   " << texIdx.size() << "   " << normIdx.size() << '\n';
+        geo::Mesh obj(vertices, normals, texCoords, vertIdx);
         return obj;
     }
 }

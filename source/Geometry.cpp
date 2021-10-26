@@ -234,4 +234,61 @@ namespace geo
             }
         }
     }
+
+    Mesh::Mesh(){}
+
+    void Mesh::init(){}
+
+    Mesh::Mesh(std::vector<glm::vec3> vertices)
+    {
+        m_Vertices = vertices;
+    }
+
+    Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals)
+    {
+        m_Vertices = vertices;
+        m_Normals = normals;
+    }
+
+    Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec2> textureCoords)
+    {
+        m_Vertices = vertices;
+        m_TexCoords = textureCoords;
+    }
+
+    Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> textureCoords)
+    {
+        m_Vertices = vertices;
+        m_Normals = normals;
+        m_TexCoords = textureCoords;
+    }
+
+    Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices)
+    {
+        m_Vertices = vertices;
+        m_Indices = indices;
+    }
+
+    Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<unsigned int> indices)
+    {
+        m_Vertices = vertices;
+        m_Normals = normals;
+        m_Indices = indices;
+    }
+
+    Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec2> textureCoords, std::vector<unsigned int> indices)
+    {
+        m_Vertices = vertices;
+        m_TexCoords = textureCoords;
+        m_Indices = indices;
+    }
+
+    Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals,
+    std::vector<glm::vec2> textureCoords, std::vector<unsigned int> indices)
+    {
+        m_Vertices = vertices;
+        m_Normals = normals;
+        m_TexCoords = textureCoords;
+        m_Indices = indices;
+    }
 }

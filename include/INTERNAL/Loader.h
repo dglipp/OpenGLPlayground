@@ -3,9 +3,10 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include <INTERNAL/Structures.h>
 
-namespace loaders
+#include <INTERNAL/Geometry.h>
+
+namespace load
 {
     class Loader
     {
@@ -25,7 +26,7 @@ namespace loaders
              * @brief The mesh object
              * 
              */
-            str::Mesh m_object;
+            geo::Mesh m_object;
 
         public:
             /**
@@ -34,7 +35,6 @@ namespace loaders
              * @param path The mesh path
              */
             Loader(std::string path, std::string name="")
-                : m_object(name)
             {
                 m_file.open(path, std::ios::in);
             }
@@ -48,14 +48,11 @@ namespace loaders
                 m_file.close();
             }
 
-            virtual str::Mesh loadMesh(std::string name) = 0;
+            virtual geo::Mesh loadMesh(std::string name) = 0;
     };
 
     class ObjLoader : Loader
     {
-        private:
-
-
         public:
             /**
              * @brief See base class documentation
@@ -70,6 +67,6 @@ namespace loaders
              * 
              * @return Returns a Mesh object 
              */
-            str::Mesh loadMesh(std::string name);
+            geo::Mesh loadMesh(std::string name);
     };
 }
