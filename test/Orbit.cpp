@@ -54,8 +54,8 @@ class Orbit : public App
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, m_Texture.getTextureID());
-            
-            std::vector<int> ind = m_Planet.getIndices();
+
+            std::vector<unsigned int> ind = m_Planet.getIndices();
             std::vector<glm::vec3> vert = m_Planet.getVertices();
             std::vector<glm::vec3> norm = m_Planet.getNormals();
             std::vector<glm::vec2> tex = m_Planet.getTexCoords();

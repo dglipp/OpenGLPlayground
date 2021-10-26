@@ -22,7 +22,7 @@ namespace geo
         return m_Indices.size();
     }
 
-    std::vector<int> Surface::getIndices()
+    std::vector<unsigned int> Surface::getIndices()
     {
         return m_Indices;
     }
@@ -40,6 +40,47 @@ namespace geo
     std::vector<glm::vec2> Surface::getTexCoords()
     {
         return m_TexCoords;
+    }
+
+    std::vector<float> Surface::getVertexBuffer()
+    {
+        std::vector<float> buffer;
+
+        for (auto &&v : m_Vertices)
+        {
+            buffer.push_back(v.x);
+            buffer.push_back(v.y);
+            buffer.push_back(v.z);
+        }
+
+        return buffer;
+    }
+
+    std::vector<float> Surface::getNormalBuffer()
+    {
+        std::vector<float> buffer;
+
+        for (auto &&v : m_Normals)
+        {
+            buffer.push_back(v.x);
+            buffer.push_back(v.y);
+            buffer.push_back(v.z);
+        }
+
+        return buffer;
+    }
+
+    std::vector<float> Surface::getTextureBuffer()
+    {
+        std::vector<float> buffer;
+
+        for (auto &&v : m_TexCoords)
+        {
+            buffer.push_back(v.s);
+            buffer.push_back(v.t);
+        }
+
+        return buffer;
     }
 
     Sphere::Sphere()
@@ -121,6 +162,7 @@ namespace geo
         , m_InnerRadius(innerRadius)
         , m_OuterRadius(outerRadius)
     {
+        init();
     }
 
     Torus::Torus(float innerRadius, float outerRadius, float precision)
@@ -128,6 +170,7 @@ namespace geo
         , m_InnerRadius(innerRadius)
         , m_OuterRadius(outerRadius)
     {
+        init();
     }
 
     void Torus::init()
@@ -140,8 +183,8 @@ namespace geo
         m_Indices.resize(nIndices);
 
         // used to calculate normal vector
-        std::vector<glm::vec3> tans;
-        std::vector<glm::vec3> bitans;
+        std::vector<glm::vec3> tans(nVertices);
+        std::vector<glm::vec3> bitans(nVertices);
 
 
         // build first vertex ring
@@ -149,7 +192,7 @@ namespace geo
         {
             float amount = i * 2.0f * M_PI / m_Precision;
             glm::mat4 rotMat = glm::rotate(glm::mat4(1.0f), amount, glm::vec3(0.0f, 0.0f, 1.0f));
-            glm::vec3 initPos(rotMat * glm::vec4(0.0f, m_OuterRadius, 0.0f, 1.0f));
+            glm::vec3 initPos(rotMat * glm::vec4(0.0f, m_OuterRadius - m_InnerRadius, 0.0f, 1.0f));
             
             m_Vertices[i] = glm::vec3(initPos + glm::vec3(m_InnerRadius, 0.0f, 0.0f));
             m_TexCoords[i] = glm::vec2(0.0f, ((float)i / (float)m_Precision));
@@ -167,8 +210,8 @@ namespace geo
             {
                 float amount = (float)ring * 2 * M_PI / m_Precision;
                 glm::mat4 rotMat = glm::rotate(glm::mat4(1.0f), amount, glm::vec3(0.0f, 1.0f, 0.0f));
-                m_Vertices[ring * (m_Precision + 1) + v] = glm::vec3(1, 1, 1); //glm::vec3(rotMat * glm::vec4(m_Vertices[v], 1.0f);
-                m_TexCoords[ring * (m_Precision + 1) + v] = glm::vec2((float) ring * 2.0f / (float) m_Precision, m_TexCoords[v].t);
+                m_Vertices[ring * (m_Precision + 1) + v] = glm::vec3(rotMat * glm::vec4(m_Vertices[v], 1.0f));
+                m_TexCoords[ring * (m_Precision + 1) + v] = glm::vec2((float) ring / (float) m_Precision, m_TexCoords[v].t);
 
                 rotMat = glm::rotate(glm::mat4(1.0f), amount, glm::vec3(0.0f, 1.0f, 0.0f));
                 bitans[ring * (m_Precision + 1) + v] = glm::vec3(rotMat * glm::vec4(bitans[v], 1.0f));

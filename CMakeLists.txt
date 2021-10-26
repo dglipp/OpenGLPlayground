@@ -33,42 +33,46 @@ file(GLOB INSTANCING "test/Instancing.cpp")
 file(GLOB MULTIPLEOBJ "test/MultipleObjects.cpp")
 file(GLOB ORBIT "test/Orbit.cpp")
 file(GLOB TEXTURE "test/Texture.cpp")
+file(GLOB IDXTORUS "test/IndexedTorus.cpp")
 
 add_executable(windowtest ${SOURCES} ${WINDOWTEST})
-target_link_libraries(windowtest OpenGL::GL glfw3 GLEW dl X11 pthread)
+target_link_libraries(windowtest soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(clearcolor ${SOURCES} ${CLEARCOLOR})
-target_link_libraries(clearcolor OpenGL::GL glfw3 GLEW dl X11 pthread)
+target_link_libraries(clearcolor soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 
 add_executable(triangle ${SOURCES} ${TRIANGLE})
-target_link_libraries(triangle OpenGL::GL glfw3 GLEW dl X11 pthread)
+target_link_libraries(triangle soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(fragmentInterpol ${SOURCES} ${FRAGMENTINTERPOL})
-target_link_libraries(fragmentInterpol OpenGL::GL glfw3 GLEW dl X11 pthread)
+target_link_libraries(fragmentInterpol soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(dataToGPU ${SOURCES} ${DATATOGPU})
-target_link_libraries(dataToGPU OpenGL::GL glfw3 GLEW dl X11 pthread)
+target_link_libraries(dataToGPU soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(MESHLOAD ${SOURCES} ${MESHLOAD})
-target_link_libraries(MESHLOAD OpenGL::GL glfw3 GLEW dl X11 pthread)
+target_link_libraries(MESHLOAD soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(fragment ${SOURCES} ${FRAGMENT})
-target_link_libraries(fragment OpenGL::GL glfw3 GLEW dl X11 pthread soil2)
+target_link_libraries(fragment soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(Instancing ${SOURCES} ${INSTANCING})
-target_link_libraries(Instancing OpenGL::GL glfw3 GLEW dl X11 pthread soil2)
+target_link_libraries(Instancing soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(MultipleObj ${SOURCES} ${MULTIPLEOBJ})
-target_link_libraries(MultipleObj OpenGL::GL glfw3 GLEW dl X11 pthread soil2)
+target_link_libraries(MultipleObj soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(Orbit ${SOURCES} ${ORBIT})
-target_link_libraries(Orbit OpenGL::GL glfw3 GLEW dl X11 pthread soil2)
+target_link_libraries(Orbit soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
 add_executable(Texture ${SOURCES} ${TEXTURE})
-target_link_libraries(Texture OpenGL::GL glfw3 GLEW dl X11 pthread soil2)
+target_link_libraries(Texture soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
 
-set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU MESHLOAD Instancing MultipleObj Orbit Texture
+add_executable(IndexingTorus ${SOURCES} ${IDXTORUS})
+target_link_libraries(IndexingTorus soil2 OpenGL::GL glfw3 GLEW dl X11 pthread)
+
+set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU MESHLOAD Instancing MultipleObj Orbit Texture IndexingTorus
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
