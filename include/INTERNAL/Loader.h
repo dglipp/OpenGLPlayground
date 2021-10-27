@@ -20,7 +20,7 @@ namespace load
              * @brief the file handler 
              * 
              */
-            std::ifstream m_file;
+            std::string m_file;
 
             /**
              * @brief The mesh object
@@ -35,8 +35,8 @@ namespace load
              * @param path The mesh path
              */
             Loader(std::string path, std::string name="")
+                : m_file(path)
             {
-                m_file.open(path, std::ios::in);
             }
 
             /**
@@ -45,10 +45,9 @@ namespace load
              */
             ~Loader()
             {
-                m_file.close();
             }
 
-            virtual geo::Mesh loadMesh(std::string name) = 0;
+            virtual geo::Mesh loadMesh() = 0;
     };
 
     class ObjLoader : Loader
@@ -67,6 +66,6 @@ namespace load
              * 
              * @return Returns a Mesh object 
              */
-            geo::Mesh loadMesh(std::string name);
+            geo::Mesh loadMesh();
     };
 }

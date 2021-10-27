@@ -12,6 +12,73 @@ namespace geo
     {
     }
 
+    Surface::Surface(std::vector<glm::vec3> vertices)
+        : m_Vertices(vertices)
+    {}
+
+    Surface::Surface(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals)
+        : m_Vertices(vertices), m_Normals(normals)
+    {}
+
+    Surface::Surface(std::vector<glm::vec3> vertices, std::vector<glm::vec2> textureCoords)
+        : m_Vertices(vertices), m_TexCoords(textureCoords)
+    {}
+
+    Surface::Surface(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> textureCoords)
+        : m_Vertices(vertices), m_Normals(normals), m_TexCoords(textureCoords)
+    {}
+
+    Surface::Surface(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices)
+        : m_Vertices(vertices), m_Indices(indices)
+    {}
+
+    Surface::Surface(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<unsigned int> indices)
+        : m_Vertices(vertices), m_Normals(normals), m_Indices(indices)
+    {}
+
+    Surface::Surface(std::vector<glm::vec3> vertices, std::vector<glm::vec2> textureCoords, std::vector<unsigned int> indices)
+        : m_Vertices(vertices), m_TexCoords(textureCoords), m_Indices(indices)
+    {}
+
+    Surface::Surface(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals,
+            std::vector<glm::vec2> textureCoords, std::vector<unsigned int> indices)
+        : m_Vertices(vertices), m_Normals(normals), m_TexCoords(textureCoords), m_Indices(indices)
+    {}
+
+    Surface::Surface(Surface && surf)
+        : m_Indices(std::move(surf.m_Indices))
+        , m_Vertices(std::move(surf.m_Vertices))
+        , m_TexCoords(std::move(surf.m_TexCoords))
+        , m_Normals(std::move(surf.m_Normals))
+    {}
+
+    Surface::Surface(const Surface & surf)
+        : m_Indices(surf.m_Indices)
+        , m_Vertices(surf.m_Vertices)
+        , m_TexCoords(surf.m_TexCoords)
+        , m_Normals(surf.m_Normals)
+    {}
+
+    Surface & Surface::operator=(const Surface & surf)
+    {
+        m_Indices = surf.m_Indices;
+        m_Vertices = surf.m_Vertices;
+        m_TexCoords = surf.m_TexCoords;
+        m_Normals = surf.m_Normals;
+
+        return *this;
+    }
+
+    Surface & Surface::operator=(Surface && surf)
+    {
+        m_Indices = std::move(surf.m_Indices);
+        m_Vertices = std::move(surf.m_Vertices);
+        m_TexCoords = std::move(surf.m_TexCoords);
+        m_Normals = std::move(surf.m_Normals);
+
+        return *this;
+    }
+
     int Surface::getNVertices()
     {
         return m_Vertices.size();
@@ -237,58 +304,74 @@ namespace geo
 
     Mesh::Mesh(){}
 
+    Mesh::Mesh(Mesh && mesh)
+        : Surface(std::move(mesh))
+    {}
+
+    Mesh::Mesh(const Mesh & mesh)
+        : Surface(mesh)
+    {}
+
+    Mesh & Mesh::operator=(Mesh && mesh)
+    {
+        m_Indices = std::move(mesh.m_Indices);
+        m_Vertices = std::move(mesh.m_Vertices);
+        m_TexCoords = std::move(mesh.m_TexCoords);
+        m_Normals = std::move(mesh.m_Normals);
+
+        return *this;
+    }
+
+    Mesh & Mesh::operator=(const Mesh & mesh)
+    {
+        m_Indices = mesh.m_Indices;
+        m_Vertices = mesh.m_Vertices;
+        m_TexCoords = mesh.m_TexCoords;
+        m_Normals = mesh.m_Normals;
+
+        return *this;
+    }
+
     void Mesh::init(){}
 
     Mesh::Mesh(std::vector<glm::vec3> vertices)
+        : Surface(vertices)
     {
-        m_Vertices = vertices;
     }
 
     Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals)
+        : Surface(vertices, normals)
     {
-        m_Vertices = vertices;
-        m_Normals = normals;
     }
 
     Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec2> textureCoords)
+        : Surface(vertices, textureCoords)
     {
-        m_Vertices = vertices;
-        m_TexCoords = textureCoords;
     }
 
     Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> textureCoords)
+        : Surface(vertices, normals, textureCoords)
     {
-        m_Vertices = vertices;
-        m_Normals = normals;
-        m_TexCoords = textureCoords;
     }
 
     Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices)
+        : Surface(vertices, indices)
     {
-        m_Vertices = vertices;
-        m_Indices = indices;
     }
 
     Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<unsigned int> indices)
+        : Surface(vertices, normals, indices)
     {
-        m_Vertices = vertices;
-        m_Normals = normals;
-        m_Indices = indices;
     }
 
     Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec2> textureCoords, std::vector<unsigned int> indices)
+        : Surface(vertices, textureCoords, indices)
     {
-        m_Vertices = vertices;
-        m_TexCoords = textureCoords;
-        m_Indices = indices;
     }
 
     Mesh::Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals,
     std::vector<glm::vec2> textureCoords, std::vector<unsigned int> indices)
+        : Surface(vertices, normals, textureCoords, indices)
     {
-        m_Vertices = vertices;
-        m_Normals = normals;
-        m_TexCoords = textureCoords;
-        m_Indices = indices;
     }
 }

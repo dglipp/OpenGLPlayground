@@ -19,6 +19,23 @@ namespace geo
 
         public:
             Surface();
+            Surface(std::vector<glm::vec3> vertices);
+            Surface(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals);
+            Surface(std::vector<glm::vec3> vertices, std::vector<glm::vec2> textureCoords);
+            Surface(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<glm::vec2> textureCoords);
+
+            Surface(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices);
+            Surface(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, std::vector<unsigned int> indices);
+            Surface(std::vector<glm::vec3> vertices, std::vector<glm::vec2> textureCoords, std::vector<unsigned int> indices);
+            Surface(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals,
+                 std::vector<glm::vec2> textureCoords, std::vector<unsigned int> indices);
+                 
+            Surface(const Surface &surf);
+            Surface(Surface &&surf);
+
+            Surface &operator=(const Surface &surf);
+            Surface &operator=(Surface &&surf);
+
             int getNVertices();
             int getNIndices();
 
@@ -30,6 +47,8 @@ namespace geo
             std::vector<float> getVertexBuffer();
             std::vector<float> getNormalBuffer();
             std::vector<float> getTextureBuffer();
+
+
     };
 
     class Sphere : public Surface
@@ -78,5 +97,11 @@ namespace geo
             Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec2> textureCoords, std::vector<unsigned int> indices);
             Mesh(std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals,
                  std::vector<glm::vec2> textureCoords, std::vector<unsigned int> indices);
+
+            Mesh(const Mesh &mesh);
+            Mesh(Mesh &&mesh);
+
+            Mesh &operator=(const Mesh &mesh);
+            Mesh &operator=(Mesh &&mesh);
     };
 }

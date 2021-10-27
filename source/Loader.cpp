@@ -6,112 +6,61 @@
 
 #include <INTERNAL/Geometry.h>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include <VENDOR/GLM/glm.hpp>
 
 namespace load
 {
-    geo::Mesh ObjLoader::loadMesh(std::string name)
+    geo::Mesh ObjLoader::loadMesh()
     {
-        /*
-            Scan each line of file.
-            Find for each line its kind (v, vn, vt, f) and add
-            to the corresponding Vector.
+        Assimp::Importer importer;
+        const aiScene *scene = importer.ReadFile(m_file, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
 
-            If face index is relative (-1) transform to absolute. 
-            Face indices are 0-based for manageability with OGL.
-        */
-        std::string line_str;
-        std::vector<std::string> line_vec;
-        std::string token;
+        if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
+        {
+            std::cout << "[ASSIMP ERROR]: " << importer.GetErrorString() << '\n';
+            return geo::Mesh();
+        }
+
+        aiNode *node = scene->mRootNode->mChildren[0];
+        aiMesh *mesh = scene->mMeshes[0];
 
         std::vector<glm::vec3> vertices;
         std::vector<glm::vec3> normals;
         std::vector<glm::vec2> texCoords;
+        std::vector<unsigned int> indices;
 
-        std::vector<unsigned int> vertIdx;
-        std::vector<unsigned int> normIdx;
-        std::vector<unsigned int> texIdx;
-
-        while(m_file)
+        for (int i = 0; i < mesh->mNumVertices; ++i)
         {
-            std::getline(m_file, line_str);
+            vertices.push_back(glm::vec3(
+                mesh->mVertices[i].x,
+                mesh->mVertices[i].y,
+                mesh->mVertices[i].z));
 
-            std::istringstream ss(line_str);
-
-            while (ss >> token)
-                line_vec.push_back(token);
-
-            if(line_vec.size() == 0)
-                continue;
-
-            if(line_vec[0] == "v")
+            if (mesh->mTextureCoords[0])
             {
-                vertices.push_back(glm::vec3(std::stof(line_vec[1]),
-                                             std::stof(line_vec[2]),
-                                             std::stof(line_vec[3])));
+                texCoords.push_back(glm::vec2(
+                mesh->mTextureCoords[0][i].x,
+                mesh->mTextureCoords[0][i].y));
             }
 
-            if(line_vec[0] == "vn")
-            {
-                normals.push_back(glm::vec3(std::stof(line_vec[1]),
-                                            std::stof(line_vec[2]),
-                                            std::stof(line_vec[3])));
-            }
-
-            if(line_vec[0] == "vt")
-            {
-                texCoords.push_back(glm::vec2(std::stof(line_vec[1]), std::stof(line_vec[2])));
-            }
-
-            if(line_vec[0] == "f")
-            {   
-                line_vec.erase(line_vec.begin());
-                for(auto lv : line_vec)
-                {
-                    std::istringstream tokenizer(lv);
-                    std::string token;
-
-                    std::vector<std::string> indices;
-                    while(std::getline(tokenizer, token, '/'))
-                        indices.push_back(token);
-
-                    if(indices.size() == 1)
-                    {
-                        int idx = std::stoi(indices[0]);
-                        vertIdx.push_back(idx > 0 ? idx - 1 : vertices.size() - idx);
-                    }
-
-                    if(indices.size() == 2)
-                    {
-                        int idx = std::stoi(indices[0]);
-                        vertIdx.push_back(idx > 0 ? idx - 1 : vertices.size() - idx);
-
-                        idx = std::stoi(indices[1]);
-                        texIdx.push_back(idx > 0 ? idx - 1 : texCoords.size() - idx);
-                    }
-
-                    if(indices.size() == 3)
-                    {
-                        int idx = std::stoi(indices[0]);
-
-                        vertIdx.push_back(idx > 0 ? idx - 1 : vertices.size() - idx);
-
-                        idx = std::stoi(indices[2]);
-                        normIdx.push_back(idx > 0 ? idx - 1 : normals.size() - idx);
-
-                        if(indices[1] != "")
-                        {
-                            idx = std::stoi(indices[1]);
-                            texIdx.push_back(idx > 0 ? idx - 1 : texCoords.size() - idx);
-                        }
-                    }
-                }
-            }
-            line_vec.clear();
+            normals.push_back(glm::vec3(
+                mesh->mNormals[i].x,
+                mesh->mNormals[i].y,
+                mesh->mNormals[i].z));
         }
 
-        std::cout << vertIdx.size() << "   " << texIdx.size() << "   " << normIdx.size() << '\n';
-        geo::Mesh obj(vertices, normals, texCoords, vertIdx);
-        return obj;
+        for (int i = 0; i < mesh->mNumFaces; ++i)
+        {
+            aiFace face = mesh->mFaces[i];
+            for (int j = 0; j < face.mNumIndices; j++)
+            {
+                indices.push_back(face.mIndices[j]);
+            }
+        }
+        
+        return geo::Mesh(vertices, normals, texCoords, indices);
     }
 }
