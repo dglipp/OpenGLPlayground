@@ -20,8 +20,7 @@ link_directories(${CMAKE_SOURCE_DIR}/lib/glew-2.1.0/lib)
 link_directories(${CMAKE_SOURCE_DIR}/lib/SOIL2)
 
 # targeting ASSIMP
-include_directories(${CMAKE_SOURCE_DIR}/lib/ASSIMP/include)
-link_directories(${CMAKE_SOURCE_DIR}/lib/ASSIMP/lib)
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/assimp)
 
 # EXECUTABLES
 file(GLOB SOURCES "source/*.cpp")

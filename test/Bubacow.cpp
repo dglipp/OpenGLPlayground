@@ -50,10 +50,10 @@ class Bubacow : public App
 
         void startup()
         {
-            load::ObjLoader meshLoader("../../res/models/cow.obj", "cow");
+            load::ObjLoader meshLoader("../../res/models/dragon.obj", "dragon");
             m_Cow = meshLoader.loadMesh();
 
-            m_Texture = Texture("../../res/textures/buba.png");
+            m_Texture = Texture("../../res/textures/sand.jpg");
             
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, m_Texture.getTextureID());

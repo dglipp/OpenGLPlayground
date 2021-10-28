@@ -24,8 +24,8 @@ namespace load
             return geo::Mesh();
         }
 
-        aiNode *node = scene->mRootNode->mChildren[0];
-        aiMesh *mesh = scene->mMeshes[0];
+        aiNode *node = scene->mRootNode->mChildren[1];
+        aiMesh *mesh = scene->mMeshes[1];
 
         std::vector<glm::vec3> vertices;
         std::vector<glm::vec3> normals;
