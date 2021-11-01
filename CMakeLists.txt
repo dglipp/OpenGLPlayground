@@ -35,6 +35,7 @@ file(GLOB MULTIPLEOBJ "test/MultipleObjects.cpp")
 file(GLOB ORBIT "test/Orbit.cpp")
 file(GLOB TEXTURE "test/Texture.cpp")
 file(GLOB BUBACOW "test/Bubacow.cpp")
+file(GLOB LIGHTTEST "test/LightTest.cpp")
 
 add_executable(windowtest ${SOURCES} ${WINDOWTEST})
 target_link_libraries(windowtest soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
@@ -69,7 +70,10 @@ target_link_libraries(Texture soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
 add_executable(Bubacow ${SOURCES} ${BUBACOW})
 target_link_libraries(Bubacow soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
 
-set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU Instancing MultipleObj Orbit Texture Bubacow
+add_executable(LightTest ${SOURCES} ${LIGHTTEST})
+target_link_libraries(LightTest soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU Instancing MultipleObj Orbit Texture Bubacow LightTest
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
