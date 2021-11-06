@@ -50,7 +50,7 @@ class Bubacow : public App
 
         void startup()
         {
-            load::ObjLoader meshLoader("../../res/models/dragon.obj", "dragon");
+            load::ObjLoader meshLoader("../../res/models/dragon.obj", "marx");
             m_Cow = meshLoader.loadMesh();
 
             m_Texture = Texture("../../res/textures/sand.jpg");
@@ -126,7 +126,7 @@ class Bubacow : public App
             mvStack.top() *= glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
             mvStack.push(mvStack.top());
-            mvStack.top() *= glm::rotate(glm::mat4(1.0f), (float)time, glm::vec3(0.0f, 1.0f, 0.0f));
+            mvStack.top() *= glm::rotate(glm::mat4(1.0f), 0.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
             glUniformMatrix4fv(mvMatLoc, 1, GL_FALSE, glm::value_ptr(mvStack.top()));
 

@@ -17,7 +17,7 @@
 #include <INTERNAL/Material.h>
 #include <INTERNAL/Loader.h>
 
-class Gouraud : public App
+class ShadingAlgorithms : public App
 {
     private:
         GLint m_Program;
@@ -27,7 +27,7 @@ class Gouraud : public App
         glm::vec3 m_Camera;
         glm::mat4 m_ProjMatrix;
 
-        geo::Mesh m_Mesh;
+        geo::Sphere m_Mesh;
         light::Positional m_posLight;
         light::Ambient m_AmbientLight;
         mtl::BaseMtl m_GoldMtl;
@@ -52,15 +52,16 @@ class Gouraud : public App
         void startup()
         {
             // mesh setup
-            load::ObjLoader meshLoader("../../res/models/dragon.obj", "dragon");
-            m_Mesh = meshLoader.loadMesh();
+            // load::ObjLoader meshLoader("../../res/models/dragon.obj", "dragon");
+            // m_Mesh = meshLoader.loadMesh();
+
 
             std::vector<unsigned int> ind = m_Mesh.getIndices();
             std::vector<float> vert = m_Mesh.getVertexBuffer();
             std::vector<float> norm = m_Mesh.getNormalBuffer();
 
             // light setup
-            m_posLight = light::Positional(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(5.0f, 2.0f, 2.0f));
+            m_posLight = light::Positional(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 10.0f));
             m_AmbientLight = light::Ambient(glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
 
             // material setup
@@ -69,8 +70,8 @@ class Gouraud : public App
             // shader setup
             std::vector<ShaderInfo> shaders =
             {
-                {GL_VERTEX_SHADER, "../../res/shaders/gouraud.vert.glsl"},
-                {GL_FRAGMENT_SHADER, "../../res/shaders/gouraud.frag.glsl"}
+                {GL_VERTEX_SHADER, "../../res/shaders/phong.vert.glsl"},
+                {GL_FRAGMENT_SHADER, "../../res/shaders/phong.frag.glsl"}
             };
 
             ShaderProgram program {shaders};
@@ -101,7 +102,7 @@ class Gouraud : public App
 
             // Projection Matrix uniform
             float aspect = (float) info.windowWidth / (float) info.windowHeight;
-            m_ProjMatrix = glm::perspective(1.0472f, aspect, 0.1f, 1000.0f);    // fov to 60 degrees
+            m_ProjMatrix = glm::perspective(1.0472f, aspect, 0.00001f, 1000.0f);    // fov to 60 degrees
             GLint projMatLoc = glGetUniformLocation(m_Program, "projMat");
             glUniformMatrix4fv(projMatLoc, 1, GL_FALSE, glm::value_ptr(m_ProjMatrix));
 
@@ -190,6 +191,14 @@ class Gouraud : public App
                 m_Camera.y -= 1;
                 break;
 
+            case GLFW_KEY_SPACE:
+                m_posLight.setLocation(m_posLight.getLocation() + glm::vec3(1.0, 0.0, 0.0));
+                break;
+
+            case GLFW_KEY_LEFT_CONTROL:
+                m_posLight.setLocation(m_posLight.getLocation() - glm::vec3(1.0, 0.0, 0.0));
+                break;
+
             default:
                 break;
             }
@@ -208,4 +217,4 @@ class Gouraud : public App
         }
 };
 
-MAIN(Gouraud);
+MAIN(ShadingAlgorithms);
