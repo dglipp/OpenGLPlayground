@@ -1,5 +1,4 @@
 .vscode
 deps
-build/**
-!build/placeholder.txt
+build
 .DS_Store

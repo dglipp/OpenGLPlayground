@@ -8,26 +8,74 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 find_package(OpenGL REQUIRED)
 
-# wildcarding src folder for c++ files:
-file(GLOB SOURCES "src/*.cpp")
-file(GLOB TESTS "src/tests/*.cpp")
-file(GLOB IMGUI_SRC "include/VENDOR/IMGUI/*.cpp")
-
-# building GLFW
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-add_subdirectory("lib/glfw-3.3.2")
+# targeting GLFW
+include_directories(${CMAKE_SOURCE_DIR}/lib/glfw-3.3.4/include)
+link_directories(${CMAKE_SOURCE_DIR}/lib/glfw-3.3.4/lib)
 
 # targeting GLEW
 include_directories(${CMAKE_SOURCE_DIR}/lib/glew-2.1.0/include)
 link_directories(${CMAKE_SOURCE_DIR}/lib/glew-2.1.0/lib)
 
-add_executable(testOGL ${SOURCES} ${IMGUI_SRC} ${TESTS})
-target_link_libraries(testOGL OpenGL::GL glfw GLEW)
+# targeting SOIL2
+link_directories(${CMAKE_SOURCE_DIR}/lib/SOIL2)
 
-if (APPLE)
-    find_library(COCOA_LIBRARY Cocoa REQUIRED)
-    find_library(IOKIT_LIBRARY IOKit REQUIRED)
-    target_link_libraries(testOGL ${COCOA_LIBRARY} ${IOKIT_LIBRARY})
-endif()
+# targeting ASSIMP
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/assimp)
+
+# EXECUTABLES
+file(GLOB SOURCES "source/*.cpp")
+file(GLOB WINDOWTEST "test/WindowTest.cpp")
+file(GLOB CLEARCOLOR "test/ClearColor.cpp")
+file(GLOB FRAGMENT "test/Fragment.cpp")
+file(GLOB TRIANGLE "test/Triangle.cpp")
+file(GLOB FRAGMENTINTERPOL "test/FragmentInterpolation.cpp")
+file(GLOB DATATOGPU "test/DataToGPU.cpp")
+file(GLOB INSTANCING "test/Instancing.cpp")
+file(GLOB MULTIPLEOBJ "test/MultipleObjects.cpp")
+file(GLOB ORBIT "test/Orbit.cpp")
+file(GLOB TEXTURE "test/Texture.cpp")
+file(GLOB BUBACOW "test/Bubacow.cpp")
+file(GLOB SHADING "test/ShadingAlgorithms.cpp")
+
+add_executable(windowtest ${SOURCES} ${WINDOWTEST})
+target_link_libraries(windowtest soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+add_executable(clearcolor ${SOURCES} ${CLEARCOLOR})
+target_link_libraries(clearcolor soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+add_executable(triangle ${SOURCES} ${TRIANGLE})
+target_link_libraries(triangle soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+add_executable(fragmentInterpol ${SOURCES} ${FRAGMENTINTERPOL})
+target_link_libraries(fragmentInterpol soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+add_executable(dataToGPU ${SOURCES} ${DATATOGPU})
+target_link_libraries(dataToGPU soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+add_executable(fragment ${SOURCES} ${FRAGMENT})
+target_link_libraries(fragment soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+add_executable(Instancing ${SOURCES} ${INSTANCING})
+target_link_libraries(Instancing soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+add_executable(MultipleObj ${SOURCES} ${MULTIPLEOBJ})
+target_link_libraries(MultipleObj soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+add_executable(Orbit ${SOURCES} ${ORBIT})
+target_link_libraries(Orbit soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+add_executable(Texture ${SOURCES} ${TEXTURE})
+target_link_libraries(Texture soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+add_executable(Bubacow ${SOURCES} ${BUBACOW})
+target_link_libraries(Bubacow soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+add_executable(ShadingAlgorithms ${SOURCES} ${SHADING})
+target_link_libraries(ShadingAlgorithms soil2 OpenGL::GL glfw3 GLEW dl X11 pthread assimp)
+
+set_target_properties(windowtest clearcolor fragment triangle fragmentInterpol dataToGPU Instancing MultipleObj Orbit Texture Bubacow ShadingAlgorithms
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test"
+)
